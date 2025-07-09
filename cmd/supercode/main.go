@@ -7,6 +7,7 @@ import (
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
 	"github.com/Kirchlive/SuperCode/internal/downloader"
+	"github.com/Kirchlive/SuperCode/internal/transformer"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -137,12 +138,35 @@ func runMerge(cmd *cobra.Command, args []string) error {
 		fmt.Printf("  - Found %d commands\n", len(detectionResult.Commands))
 	}
 
-	// Step 3: Generate code (to be implemented)
-	if !dryRun {
-		fmt.Println("\n⚙️  Generating OpenCode implementations...")
-		// TODO: Implement code generation
+	// Step 3: Transform features
+	fmt.Println("\n⚙️  Transforming features to OpenCode format...")
+	
+	transformCtx := &transformer.TransformationContext{
+		SourceRepo: superClaudePath,
+		TargetRepo: filepath.Join(absTargetDir, "OpenCode"),
+		DryRun:     dryRun,
+		Verbose:    verbose,
+	}
+	
+	transformEngine := transformer.NewEngine(transformCtx)
+	transformResult, err := transformEngine.TransformAll(detectionResult)
+	if err != nil {
+		return fmt.Errorf("failed to transform features: %w", err)
+	}
+	
+	if verbose {
+		transformEngine.PrintSummary(transformResult)
 	} else {
-		fmt.Println("\n⚙️  [DRY RUN] Would generate OpenCode implementations")
+		fmt.Printf("  - Generated %d files\n", len(transformResult.Files))
+	}
+	
+	// Step 4: Generate code (to be implemented)
+	if !dryRun {
+		fmt.Println("\n📝 Writing generated files...")
+		// TODO: Implement file writing
+		fmt.Println("  - [NOT IMPLEMENTED] Would write files to disk")
+	} else {
+		fmt.Println("\n📝 [DRY RUN] Would write generated files")
 	}
 
 	// Step 4: Build binary (to be implemented)
