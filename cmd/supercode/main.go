@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Kirchlive/SuperCode/internal/analyzer"
 	"github.com/Kirchlive/SuperCode/internal/downloader"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -119,12 +120,21 @@ func runMerge(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to download repositories: %w", err)
 	}
 
-	// Step 2: Detect features (to be implemented)
+	// Step 2: Detect features
 	fmt.Println("\n🔍 Detecting SuperClaude features...")
+	analyzer := analyzer.NewAnalyzer()
+	superClaudePath := filepath.Join(absTargetDir, "SuperClaude")
+	
+	detectionResult, err := analyzer.AnalyzeRepository(superClaudePath)
+	if err != nil {
+		return fmt.Errorf("failed to analyze repository: %w", err)
+	}
+	
 	if verbose {
-		fmt.Println("  - Searching for personas...")
-		fmt.Println("  - Searching for commands...")
-		fmt.Println("  - Searching for configurations...")
+		analyzer.PrintSummary(detectionResult)
+	} else {
+		fmt.Printf("  - Found %d personas\n", len(detectionResult.Personas))
+		fmt.Printf("  - Found %d commands\n", len(detectionResult.Commands))
 	}
 
 	// Step 3: Generate code (to be implemented)
