@@ -7,6 +7,7 @@ import (
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
 	"github.com/Kirchlive/SuperCode/internal/downloader"
+	"github.com/Kirchlive/SuperCode/internal/generator"
 	"github.com/Kirchlive/SuperCode/internal/transformer"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -78,6 +79,9 @@ func init() {
 	mergeCmd.Flags().Bool("dry-run", false, "preview what will be done without making changes")
 	mergeCmd.Flags().StringSlice("features", []string{}, "specific features to merge")
 	mergeCmd.Flags().StringSlice("skip", []string{}, "features to skip")
+	mergeCmd.Flags().String("output", "./supercode-output", "output directory for generated files")
+	mergeCmd.Flags().Bool("backup", true, "create backups of existing files")
+	mergeCmd.Flags().Bool("force", false, "overwrite existing files without prompting")
 }
 
 // initConfig reads in config file and ENV variables if set
@@ -160,13 +164,39 @@ func runMerge(cmd *cobra.Command, args []string) error {
 		fmt.Printf("  - Generated %d files\n", len(transformResult.Files))
 	}
 	
-	// Step 4: Generate code (to be implemented)
+	// Step 4: Generate code
+	fmt.Println("\n📝 Generating files...")
+	
+	// Get output directory from flags
+	outputDir, _ := cmd.Flags().GetString("output")
+	createBackups, _ := cmd.Flags().GetBool("backup")
+	force, _ := cmd.Flags().GetBool("force")
+	
+	// Create generator configuration
+	genConfig := &generator.GeneratorConfig{
+		OutputDir:     outputDir,
+		BackupDir:     filepath.Join(outputDir, ".backups"),
+		DryRun:        dryRun,
+		Force:         force,
+		CreateBackups: createBackups,
+		Verbose:       verbose,
+	}
+	
+	// Create generator and write files
+	gen := generator.NewGenerator(genConfig)
+	genResult, err := gen.Generate(transformResult.Files)
+	if err != nil {
+		return fmt.Errorf("failed to generate files: %w", err)
+	}
+	
 	if !dryRun {
-		fmt.Println("\n📝 Writing generated files...")
-		// TODO: Implement file writing
-		fmt.Println("  - [NOT IMPLEMENTED] Would write files to disk")
-	} else {
-		fmt.Println("\n📝 [DRY RUN] Would write generated files")
+		fmt.Printf("  - Wrote %d files\n", len(genResult.FilesWritten))
+		if len(genResult.FilesSkipped) > 0 {
+			fmt.Printf("  - Skipped %d files (use --force to overwrite)\n", len(genResult.FilesSkipped))
+		}
+		if len(genResult.Errors) > 0 {
+			fmt.Printf("  - ⚠️  %d errors occurred\n", len(genResult.Errors))
+		}
 	}
 
 	// Step 4: Build binary (to be implemented)
