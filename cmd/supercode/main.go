@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
+	"github.com/Kirchlive/SuperCode/internal/builder"
 	"github.com/Kirchlive/SuperCode/internal/downloader"
 	"github.com/Kirchlive/SuperCode/internal/generator"
 	"github.com/Kirchlive/SuperCode/internal/transformer"
@@ -82,6 +83,9 @@ func init() {
 	mergeCmd.Flags().String("output", "./supercode-output", "output directory for generated files")
 	mergeCmd.Flags().Bool("backup", true, "create backups of existing files")
 	mergeCmd.Flags().Bool("force", false, "overwrite existing files without prompting")
+	mergeCmd.Flags().Bool("skip-build", false, "skip building the binary")
+	mergeCmd.Flags().Bool("skip-typescript", false, "skip TypeScript compilation")
+	mergeCmd.Flags().Bool("skip-tests", false, "skip running tests")
 }
 
 // initConfig reads in config file and ENV variables if set
@@ -199,12 +203,43 @@ func runMerge(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// Step 4: Build binary (to be implemented)
-	if !dryRun {
-		fmt.Println("\n🔨 Building SuperCode binary...")
-		// TODO: Implement build process
-	} else {
-		fmt.Println("\n🔨 [DRY RUN] Would build SuperCode binary")
+	// Step 5: Build binary
+	skipBuild, _ := cmd.Flags().GetBool("skip-build")
+	if !skipBuild && !dryRun {
+		fmt.Println("\n🏗️  Building SuperCode...")
+		
+		skipTypeScript, _ := cmd.Flags().GetBool("skip-typescript")
+		skipTests, _ := cmd.Flags().GetBool("skip-tests")
+		
+		// Create build configuration
+		buildConfig := &builder.BuildConfig{
+			WorkDir:        absTargetDir,
+			OutputDir:      filepath.Join(outputDir, "bin"),
+			OpenCodePath:   filepath.Join(absTargetDir, "OpenCode"),
+			GeneratedPath:  outputDir,
+			Verbose:        verbose,
+			SkipTypeScript: skipTypeScript,
+			SkipTests:      skipTests,
+		}
+		
+		// Create builder and run build
+		bldr := builder.NewDefaultBuilder(buildConfig)
+		buildResult, err := bldr.Build()
+		if err != nil {
+			return fmt.Errorf("build failed: %w", err)
+		}
+		
+		if buildResult.Success {
+			fmt.Printf("  ✓ Binary built: %s\n", buildResult.BinaryPath)
+			if buildResult.TypeScriptBuilt {
+				fmt.Println("  ✓ TypeScript compiled")
+			}
+			if buildResult.TestsPassed {
+				fmt.Println("  ✓ Tests passed")
+			}
+		}
+	} else if !skipBuild && dryRun {
+		fmt.Println("\n🏗️  [DRY RUN] Would build SuperCode binary")
 	}
 
 	fmt.Println("\n✅ Merge process completed successfully!")
