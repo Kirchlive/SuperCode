@@ -1,0 +1,73 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Binary output directory
+bin/
+dist/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+coverage.txt
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# IDE specific files
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+*.iml
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# SuperCode specific
+supercode-output/
+.supercode/
+*.log
+*.tmp
+
+# Downloaded repositories
+repos/
+cache/
+
+# Generated files
+generated/
+output/
+
+# Test data (except fixtures)
+testdata/*
+!testdata/superclaude/
+!testdata/opencode/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Debug files
+debug
+__debug_bin
+
+# Profiling data
+*.prof
+*.mem
+*.cpu
+
+# Release artifacts
+*.tar.gz
+*.zip

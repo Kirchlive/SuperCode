@@ -1,0 +1,59 @@
+# .golangci.yml - GolangCI-Lint configuration
+
+run:
+  timeout: 5m
+  tests: false
+  skip-dirs:
+    - vendor
+    - testdata
+
+linters:
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - errcheck
+    - gofmt
+    - goimports
+    - golint
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - nolintlint
+    - rowserrcheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+
+  disable:
+    - gochecknoinits
+    - gochecknoglobals
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  gofmt:
+    simplify: true
+  golint:
+    min-confidence: 0.8
+  govet:
+    check-shadowing: true
+  misspell:
+    locale: US
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
