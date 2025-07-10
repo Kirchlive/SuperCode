@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 )
 
@@ -20,6 +21,17 @@ func NewPersonaDetector() *PersonaDetector {
 // Detect finds all personas in the repository
 func (d *PersonaDetector) Detect(repoPath string) ([]Persona, error) {
 	var allPersonas []Persona
+
+	// Try SuperClaude format first
+	superClaudePath := filepath.Join(repoPath, ".claude", "shared", "superclaude-personas.yml")
+	if _, err := os.Stat(superClaudePath); err == nil {
+		// Use specialized parser for SuperClaude format
+		personas, err := ParseSuperClaudePersonas(superClaudePath)
+		if err == nil {
+			return personas, nil
+		}
+		// Fall back to regular parsing if specialized parser fails
+	}
 
 	// Try multiple possible locations for persona file
 	possiblePaths := []string{

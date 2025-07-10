@@ -1,6 +1,7 @@
 package analyzer
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -101,4 +102,50 @@ func TestCommandDetector_inferCategory(t *testing.T) {
 			assert.Equal(t, tt.expected, category)
 		})
 	}
+}
+
+func TestPersonaDetector_SuperClaudeFormat(t *testing.T) {
+	detector := NewPersonaDetector()
+	
+	// Create test directory with SuperClaude format
+	testDir := t.TempDir()
+	claudeDir := filepath.Join(testDir, ".claude", "shared")
+	os.MkdirAll(claudeDir, 0755)
+	
+	// Copy test file
+	testData, _ := os.ReadFile("testdata/superclaude/superclaude-format-test.yml")
+	os.WriteFile(filepath.Join(claudeDir, "superclaude-personas.yml"), testData, 0644)
+	
+	personas, err := detector.Detect(testDir)
+	
+	assert.NoError(t, err)
+	assert.Len(t, personas, 2, "Should find 2 personas")
+	
+	// Check architect persona
+	found := false
+	for _, p := range personas {
+		if p.Name == "architect" {
+			found = true
+			assert.Contains(t, p.Description, "Systems architect")
+			assert.Contains(t, p.SystemPrompt, "Systems evolve")
+			assert.Contains(t, p.Tools, "sequential")
+			assert.Contains(t, p.Tools, "research")
+			assert.Equal(t, "claude-3-opus", p.Model)
+			break
+		}
+	}
+	assert.True(t, found, "architect persona should be found")
+	
+	// Check frontend persona
+	found = false
+	for _, p := range personas {
+		if p.Name == "frontend" {
+			found = true
+			assert.Contains(t, p.Description, "UX specialist")
+			assert.Contains(t, p.Tools, "magic")
+			assert.Contains(t, p.Tools, "browser")
+			break
+		}
+	}
+	assert.True(t, found, "frontend persona should be found")
 }

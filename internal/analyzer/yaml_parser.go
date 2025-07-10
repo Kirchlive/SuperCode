@@ -121,9 +121,14 @@ func (p *YAMLParser) extractSection(content string, section string) string {
 func (p *YAMLParser) ParsePersonas(data map[string]interface{}) ([]Persona, error) {
 	var personas []Persona
 
+	// Try different keys for personas
 	personasData, ok := data["personas"]
 	if !ok {
-		return nil, nil
+		// Try SuperClaude format
+		personasData, ok = data["All_Personas"]
+		if !ok {
+			return nil, nil
+		}
 	}
 
 	personasMap, ok := personasData.(map[string]interface{})
@@ -141,18 +146,38 @@ func (p *YAMLParser) ParsePersonas(data map[string]interface{}) ([]Persona, erro
 			Name: name,
 		}
 
-		// Parse fields
+		// Parse fields - try multiple field names for compatibility
 		if desc, ok := personaMap["description"].(string); ok {
 			persona.Description = desc
+		} else if identity, ok := personaMap["Identity"].(string); ok {
+			persona.Description = identity
 		}
+		
 		if prompt, ok := personaMap["systemPrompt"].(string); ok {
 			persona.SystemPrompt = prompt
+		} else if coreBelief, ok := personaMap["Core_Belief"].(string); ok {
+			// For SuperClaude, combine multiple fields to create system prompt
+			persona.SystemPrompt = coreBelief
+			if primaryQ, ok := personaMap["Primary_Question"].(string); ok {
+				persona.SystemPrompt += "\n\nPrimary Question: " + primaryQ
+			}
+			if problemSolving, ok := personaMap["Problem_Solving"].(string); ok {
+				persona.SystemPrompt += "\n\nProblem Solving: " + problemSolving
+			}
 		}
+		
 		if model, ok := personaMap["model"].(string); ok {
 			persona.Model = model
+		} else {
+			// Default model for SuperClaude personas
+			persona.Model = "claude-3-opus"
 		}
+		
 		if temp, ok := personaMap["temperature"].(float64); ok {
 			persona.Temperature = temp
+		} else {
+			// Default temperature
+			persona.Temperature = 0.7
 		}
 
 		// Parse tools array
@@ -161,6 +186,21 @@ func (p *YAMLParser) ParsePersonas(data map[string]interface{}) ([]Persona, erro
 				if toolStr, ok := tool.(string); ok {
 					persona.Tools = append(persona.Tools, toolStr)
 				}
+			}
+		} else if mcpPrefs, ok := personaMap["MCP_Preferences"].(string); ok {
+			// Parse MCP preferences from SuperClaude format
+			// Extract tools from MCP_Preferences string
+			if strings.Contains(mcpPrefs, "Sequential") {
+				persona.Tools = append(persona.Tools, "sequential")
+			}
+			if strings.Contains(mcpPrefs, "Context7") {
+				persona.Tools = append(persona.Tools, "research")
+			}
+			if strings.Contains(mcpPrefs, "Magic") {
+				persona.Tools = append(persona.Tools, "magic")
+			}
+			if strings.Contains(mcpPrefs, "Puppeteer") {
+				persona.Tools = append(persona.Tools, "browser")
 			}
 		}
 
