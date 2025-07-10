@@ -9,6 +9,7 @@ import (
 type Analyzer struct {
 	personaDetector *PersonaDetector
 	commandDetector *CommandDetector
+	mcpDetector     *MCPDetector
 	yamlParser      *YAMLParser
 }
 
@@ -17,6 +18,7 @@ func NewAnalyzer() *Analyzer {
 	return &Analyzer{
 		personaDetector: NewPersonaDetector(),
 		commandDetector: NewCommandDetector(),
+		mcpDetector:     NewMCPDetector(),
 		yamlParser:      NewYAMLParser(),
 	}
 }
@@ -47,7 +49,16 @@ func (a *Analyzer) AnalyzeRepository(repoPath string) (*DetectionResult, error) 
 		log.Printf("Found %d commands", len(commands))
 	}
 
-	// TODO: Add MCP server detection
+	// Detect MCP features
+	log.Println("Detecting MCP features...")
+	mcpFeature, err := a.mcpDetector.Detect(repoPath)
+	if err != nil {
+		result.Errors = append(result.Errors, fmt.Errorf("MCP detection: %w", err))
+	} else {
+		result.MCPFeature = mcpFeature
+		log.Printf("Found %d MCP servers", len(mcpFeature.Servers))
+	}
+
 	// TODO: Add compression pattern detection
 
 	return result, nil
@@ -69,6 +80,20 @@ func (a *Analyzer) PrintSummary(result *DetectionResult) {
 		fmt.Printf("  - /%s: %s\n", c.Name, c.Purpose)
 		fmt.Printf("    Category: %s, Flags: %d, Examples: %d\n", 
 			c.Category, len(c.Flags), len(c.Examples))
+	}
+
+	if result.MCPFeature != nil {
+		fmt.Printf("\nMCP Servers (%d):\n", len(result.MCPFeature.Servers))
+		for name, server := range result.MCPFeature.Servers {
+			fmt.Printf("  - %s: %s\n", name, server.Purpose)
+			fmt.Printf("    Token Cost: %s, Success Rate: %s\n", server.TokenCost, server.SuccessRate)
+			fmt.Printf("    Capabilities: %v\n", server.Capabilities)
+		}
+
+		fmt.Printf("\nMCP Command Defaults:\n")
+		for cmd, servers := range result.MCPFeature.CommandDefaults {
+			fmt.Printf("  - %s: %v\n", cmd, servers)
+		}
 	}
 
 	if len(result.Errors) > 0 {

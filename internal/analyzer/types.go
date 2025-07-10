@@ -1,6 +1,9 @@
 package analyzer
 
-import "time"
+import (
+	"time"
+	"github.com/Kirchlive/SuperCode/internal/analyzer/types"
+)
 
 // Feature represents a detected feature from SuperClaude
 type Feature struct {
@@ -73,6 +76,7 @@ type DetectionResult struct {
 	Personas   []Persona
 	Commands   []Command
 	MCPServers []MCPServer
+	MCPFeature *types.MCPFeature
 	Includes   []IncludeDirective
 	Errors     []error
 }

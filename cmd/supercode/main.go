@@ -8,7 +8,6 @@ import (
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
 	"github.com/Kirchlive/SuperCode/internal/builder"
 	"github.com/Kirchlive/SuperCode/internal/downloader"
-	"github.com/Kirchlive/SuperCode/internal/generator"
 	"github.com/Kirchlive/SuperCode/internal/transformer"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -144,66 +143,29 @@ func runMerge(cmd *cobra.Command, args []string) error {
 	} else {
 		fmt.Printf("  - Found %d personas\n", len(detectionResult.Personas))
 		fmt.Printf("  - Found %d commands\n", len(detectionResult.Commands))
+		if detectionResult.MCPFeature != nil {
+			fmt.Printf("  - Found %d MCP servers\n", len(detectionResult.MCPFeature.Servers))
+		}
 	}
 
 	// Step 3: Transform features
 	fmt.Println("\n⚙️  Transforming features to OpenCode format...")
 	
-	transformCtx := &transformer.TransformationContext{
-		SourceRepo: superClaudePath,
-		TargetRepo: filepath.Join(absTargetDir, "OpenCode"),
-		DryRun:     dryRun,
-		Verbose:    verbose,
-	}
+	outputDir, _ := cmd.Flags().GetString("output")
+	transformer := transformer.NewTransformer()
 	
-	transformEngine := transformer.NewEngine(transformCtx)
-	transformResult, err := transformEngine.TransformAll(detectionResult)
-	if err != nil {
+	if err := transformer.Transform(detectionResult, outputDir); err != nil {
 		return fmt.Errorf("failed to transform features: %w", err)
 	}
 	
-	if verbose {
-		transformEngine.PrintSummary(transformResult)
-	} else {
-		fmt.Printf("  - Generated %d files\n", len(transformResult.Files))
-	}
-	
-	// Step 4: Generate code
-	fmt.Println("\n📝 Generating files...")
-	
-	// Get output directory from flags
-	outputDir, _ := cmd.Flags().GetString("output")
-	createBackups, _ := cmd.Flags().GetBool("backup")
-	force, _ := cmd.Flags().GetBool("force")
-	
-	// Create generator configuration
-	genConfig := &generator.GeneratorConfig{
-		OutputDir:     outputDir,
-		BackupDir:     filepath.Join(outputDir, ".backups"),
-		DryRun:        dryRun,
-		Force:         force,
-		CreateBackups: createBackups,
-		Verbose:       verbose,
-	}
-	
-	// Create generator and write files
-	gen := generator.NewGenerator(genConfig)
-	genResult, err := gen.Generate(transformResult.Files)
-	if err != nil {
-		return fmt.Errorf("failed to generate files: %w", err)
-	}
-	
-	if !dryRun {
-		fmt.Printf("  - Wrote %d files\n", len(genResult.FilesWritten))
-		if len(genResult.FilesSkipped) > 0 {
-			fmt.Printf("  - Skipped %d files (use --force to overwrite)\n", len(genResult.FilesSkipped))
-		}
-		if len(genResult.Errors) > 0 {
-			fmt.Printf("  - ⚠️  %d errors occurred\n", len(genResult.Errors))
-		}
+	// Generate summary
+	if err := transformer.GenerateSummary(detectionResult, outputDir); err != nil {
+		return fmt.Errorf("failed to generate summary: %w", err)
 	}
 
-	// Step 5: Build binary
+	fmt.Printf("  - Transformation completed\n")
+
+	// Step 4: Build binary
 	skipBuild, _ := cmd.Flags().GetBool("skip-build")
 	if !skipBuild && !dryRun {
 		fmt.Println("\n🏗️  Building SuperCode...")
