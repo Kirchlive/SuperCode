@@ -15,7 +15,7 @@ func New() *Generator {
 }
 
 // WriteFile writes content to a file, creating directories as needed
-func (g *Generator) WriteFile(filePath, content string) error {
+func (g *Generator) WriteFile(filePath string, content []byte) error {
 	// Create directory if it doesn't exist
 	dir := filepath.Dir(filePath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -23,7 +23,7 @@ func (g *Generator) WriteFile(filePath, content string) error {
 	}
 
 	// Write file
-	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
+	if err := os.WriteFile(filePath, content, 0644); err != nil {
 		return fmt.Errorf("failed to write file %s: %w", filePath, err)
 	}
 
@@ -31,6 +31,6 @@ func (g *Generator) WriteFile(filePath, content string) error {
 }
 
 // EnsureDir creates a directory if it doesn't exist
-func (g *Generator) EnsureDir(dirPath string) error {
-	return os.MkdirAll(dirPath, 0755)
+func (g *Generator) EnsureDir(path string) error {
+	return os.MkdirAll(path, 0755)
 }

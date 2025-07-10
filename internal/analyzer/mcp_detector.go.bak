@@ -141,6 +141,7 @@ func (d *MCPDetector) extractServers(servers map[string]interface{}, feature *ty
 				server = types.MCPServer{
 					Name: name,
 				}
+			} else {
 			}
 
 			if purpose, ok := serverMap["Purpose"].(string); ok {
@@ -163,6 +164,7 @@ func (d *MCPDetector) extractServers(servers map[string]interface{}, feature *ty
 			}
 
 			feature.Servers[name] = server
+		} else {
 		}
 	}
 }
@@ -175,11 +177,13 @@ func (d *MCPDetector) extractServerCapabilities(serverCaps map[string]interface{
 			
 			if server.Name == "" {
 				server = types.MCPServer{Name: name}
+			} else {
 			}
 
 			// Only update purpose if not already set
 			if purpose, ok := capMap["Purpose"].(string); ok && server.Purpose == "" {
 				server.Purpose = purpose
+			} else if purpose, ok := capMap["Purpose"].(string); ok {
 			}
 			
 			if capabilities, ok := capMap["Capabilities"].(string); ok {
@@ -214,6 +218,7 @@ func (d *MCPDetector) extractServerCapabilities(serverCaps map[string]interface{
 			// Only update token cost if not already set
 			if tokenCost, ok := capMap["Token_Cost"].(string); ok && server.TokenCost == "" {
 				server.TokenCost = tokenCost
+			} else if tokenCost, ok := capMap["Token_Cost"].(string); ok {
 			}
 			
 			if workflows, ok := capMap["Workflows"].(string); ok {
@@ -227,6 +232,7 @@ func (d *MCPDetector) extractServerCapabilities(serverCaps map[string]interface{
 			}
 
 			feature.Servers[name] = server
+		} else {
 		}
 	}
 }
@@ -674,6 +680,7 @@ func (d *MCPDetector) parseSuperclaude(content string, feature *types.MCPFeature
 		}
 		
 		return nil
+	} else {
 	}
 	
 	// Fall back to line-by-line parsing
@@ -802,11 +809,13 @@ func (d *MCPDetector) parseExecutionPatterns(content string, feature *types.MCPF
 	lines := strings.Split(content, "\n")
 	inCodeBlock := false
 	codeBlockContent := []string{}
+	codeBlockCount := 0
 	
-	for _, line := range lines {
+	for i, line := range lines {
 		// Check for code block markers
 		if strings.TrimSpace(line) == "```yaml" {
 			inCodeBlock = true
+			codeBlockCount++
 			continue
 		} else if strings.TrimSpace(line) == "```" && inCodeBlock {
 			// Parse the collected YAML content

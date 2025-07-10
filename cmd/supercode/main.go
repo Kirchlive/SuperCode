@@ -54,11 +54,32 @@ var initCmd = &cobra.Command{
 
 // detectCmd represents the detect command
 var detectCmd = &cobra.Command{
-	Use:   "detect",
+	Use:   "detect [path]",
 	Short: "Detect features in repositories",
+	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("🔍 Detecting features...")
-		// TODO: Implement detection logic
+		
+		repoPath := args[0]
+		
+		// Create absolute path
+		absPath, err := filepath.Abs(repoPath)
+		if err != nil {
+			return fmt.Errorf("failed to resolve path: %w", err)
+		}
+		
+		// Create analyzer
+		analyzer := analyzer.NewAnalyzer()
+		
+		// Analyze repository
+		result, err := analyzer.AnalyzeRepository(absPath)
+		if err != nil {
+			return fmt.Errorf("failed to analyze repository: %w", err)
+		}
+		
+		// Print results
+		analyzer.PrintSummary(result)
+		
 		return nil
 	},
 }

@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
-	"github.com/Kirchlive/SuperCode/internal/generator"
+	"github.com/Kirchlive/SuperCode/internal/interfaces"
 )
 
 // CommandTransformer transforms SuperClaude commands to OpenCode commands
 type CommandTransformer struct {
-	generator *generator.Generator
+	generator interfaces.Generator
 }
 
 // NewCommandTransformer creates a new command transformer
-func NewCommandTransformer(gen *generator.Generator) *CommandTransformer {
+func NewCommandTransformer(gen interfaces.Generator) *CommandTransformer {
 	return &CommandTransformer{
 		generator: gen,
 	}
@@ -31,7 +31,7 @@ func (t *CommandTransformer) Transform(commands []analyzer.Command, outputDir st
 
 	// Generate command index file
 	indexContent := t.generateCommandIndex(commands)
-	if err := t.generator.WriteFile(filepath.Join(commandsDir, "index.ts"), indexContent); err != nil {
+	if err := t.generator.WriteFile(filepath.Join(commandsDir, "index.ts"), []byte(indexContent)); err != nil {
 		return fmt.Errorf("failed to write command index: %w", err)
 	}
 
@@ -39,7 +39,7 @@ func (t *CommandTransformer) Transform(commands []analyzer.Command, outputDir st
 	for _, command := range commands {
 		commandContent := t.generateCommandFile(command)
 		filename := filepath.Join(commandsDir, command.Name+".ts")
-		if err := t.generator.WriteFile(filename, commandContent); err != nil {
+		if err := t.generator.WriteFile(filename, []byte(commandContent)); err != nil {
 			return fmt.Errorf("failed to write command %s: %w", command.Name, err)
 		}
 	}
@@ -47,7 +47,7 @@ func (t *CommandTransformer) Transform(commands []analyzer.Command, outputDir st
 	// Generate configuration file
 	configContent := t.generateConfig(commands)
 	configPath := filepath.Join(outputDir, "config", "commands.json")
-	if err := t.generator.WriteFile(configPath, configContent); err != nil {
+	if err := t.generator.WriteFile(configPath, []byte(configContent)); err != nil {
 		return fmt.Errorf("failed to write commands config: %w", err)
 	}
 

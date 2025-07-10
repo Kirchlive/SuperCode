@@ -113,7 +113,7 @@ func TestPersonaDetector_SuperClaudeFormat(t *testing.T) {
 	os.MkdirAll(claudeDir, 0755)
 	
 	// Copy test file
-	testData, _ := os.ReadFile("testdata/superclaude/superclaude-format-test.yml")
+	testData, _ := os.ReadFile("./testdata/superclaude/superclaude-format-test.yml")
 	os.WriteFile(filepath.Join(claudeDir, "superclaude-personas.yml"), testData, 0644)
 	
 	personas, err := detector.Detect(testDir)

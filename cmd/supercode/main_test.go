@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,12 @@ func TestCommands(t *testing.T) {
 	// Map to track which commands we found
 	foundCommands := make(map[string]bool)
 	for _, cmd := range commands {
-		foundCommands[cmd.Use] = true
+		// Extract command name without arguments
+		cmdName := cmd.Use
+		if spaceIdx := strings.Index(cmdName, " "); spaceIdx > 0 {
+			cmdName = cmdName[:spaceIdx]
+		}
+		foundCommands[cmdName] = true
 	}
 	
 	// Check expected commands

@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer/types"
-	"github.com/Kirchlive/SuperCode/internal/generator"
+	"github.com/Kirchlive/SuperCode/internal/interfaces"
 )
 
 // MCPTransformer handles transformation of SuperClaude MCP features to OpenCode
 type MCPTransformer struct {
-	generator *generator.Generator
+	generator interfaces.Generator
 }
 
 // NewMCPTransformer creates a new MCP transformer
-func NewMCPTransformer(gen *generator.Generator) *MCPTransformer {
+func NewMCPTransformer(gen interfaces.Generator) *MCPTransformer {
 	return &MCPTransformer{
 		generator: gen,
 	}
@@ -54,19 +54,19 @@ func (t *MCPTransformer) createMCPServers(feature *types.MCPFeature, outputDir s
 		
 		// Generate server implementation
 		serverImpl := t.generateServerImplementation(name, server)
-		if err := t.generator.WriteFile(filepath.Join(serverDir, "index.ts"), serverImpl); err != nil {
+		if err := t.generator.WriteFile(filepath.Join(serverDir, "index.ts"), []byte(serverImpl)); err != nil {
 			return fmt.Errorf("failed to write server %s: %w", name, err)
 		}
 
 		// Generate package.json
 		packageJSON := t.generatePackageJSON(name, server)
-		if err := t.generator.WriteFile(filepath.Join(serverDir, "package.json"), packageJSON); err != nil {
+		if err := t.generator.WriteFile(filepath.Join(serverDir, "package.json"), []byte(packageJSON)); err != nil {
 			return fmt.Errorf("failed to write package.json for %s: %w", name, err)
 		}
 
 		// Generate README
 		readme := t.generateServerREADME(name, server)
-		if err := t.generator.WriteFile(filepath.Join(serverDir, "README.md"), readme); err != nil {
+		if err := t.generator.WriteFile(filepath.Join(serverDir, "README.md"), []byte(readme)); err != nil {
 			return fmt.Errorf("failed to write README for %s: %w", name, err)
 		}
 
@@ -274,14 +274,14 @@ func (t *MCPTransformer) createMCPConfig(feature *types.MCPFeature, outputDir st
 	config := t.generateMCPConfig(feature)
 	
 	configPath := filepath.Join(outputDir, "config", "mcp-config.json")
-	if err := t.generator.WriteFile(configPath, config); err != nil {
+	if err := t.generator.WriteFile(configPath, []byte(config)); err != nil {
 		return fmt.Errorf("failed to write MCP config: %w", err)
 	}
 
 	// Also create example opencode.json
 	exampleConfig := t.generateExampleConfig(feature)
 	examplePath := filepath.Join(outputDir, "config", "opencode.example.json")
-	if err := t.generator.WriteFile(examplePath, exampleConfig); err != nil {
+	if err := t.generator.WriteFile(examplePath, []byte(exampleConfig)); err != nil {
 		return fmt.Errorf("failed to write example config: %w", err)
 	}
 
@@ -358,21 +358,21 @@ func (t *MCPTransformer) createCommandIntegrations(feature *types.MCPFeature, ou
 	// Generate context detection helper
 	contextHelper := t.generateContextDetectionHelper(feature)
 	helperPath := filepath.Join(integrationsDir, "context-detection.ts")
-	if err := t.generator.WriteFile(helperPath, contextHelper); err != nil {
+	if err := t.generator.WriteFile(helperPath, []byte(contextHelper)); err != nil {
 		return fmt.Errorf("failed to write context detection helper: %w", err)
 	}
 
 	// Generate command integration helper
 	cmdHelper := t.generateCommandIntegrationHelper(feature)
 	cmdPath := filepath.Join(integrationsDir, "command-mcp.ts")
-	if err := t.generator.WriteFile(cmdPath, cmdHelper); err != nil {
+	if err := t.generator.WriteFile(cmdPath, []byte(cmdHelper)); err != nil {
 		return fmt.Errorf("failed to write command integration helper: %w", err)
 	}
 
 	// Generate quality control helper
 	qcHelper := t.generateQualityControlHelper(feature)
 	qcPath := filepath.Join(integrationsDir, "quality-control.ts")
-	if err := t.generator.WriteFile(qcPath, qcHelper); err != nil {
+	if err := t.generator.WriteFile(qcPath, []byte(qcHelper)); err != nil {
 		return fmt.Errorf("failed to write quality control helper: %w", err)
 	}
 

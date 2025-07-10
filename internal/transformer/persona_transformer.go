@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
-	"github.com/Kirchlive/SuperCode/internal/generator"
+	"github.com/Kirchlive/SuperCode/internal/interfaces"
 )
 
 // PersonaTransformer transforms SuperClaude personas to OpenCode agents
 type PersonaTransformer struct {
-	generator *generator.Generator
+	generator interfaces.Generator
 }
 
 // NewPersonaTransformer creates a new persona transformer
-func NewPersonaTransformer(gen *generator.Generator) *PersonaTransformer {
+func NewPersonaTransformer(gen interfaces.Generator) *PersonaTransformer {
 	return &PersonaTransformer{
 		generator: gen,
 	}
@@ -31,7 +31,7 @@ func (t *PersonaTransformer) Transform(personas []analyzer.Persona, outputDir st
 
 	// Generate provider index file
 	providerContent := t.generateProviderIndex(personas)
-	if err := t.generator.WriteFile(filepath.Join(agentsDir, "index.ts"), providerContent); err != nil {
+	if err := t.generator.WriteFile(filepath.Join(agentsDir, "index.ts"), []byte(providerContent)); err != nil {
 		return fmt.Errorf("failed to write provider index: %w", err)
 	}
 
@@ -39,7 +39,7 @@ func (t *PersonaTransformer) Transform(personas []analyzer.Persona, outputDir st
 	for _, persona := range personas {
 		personaContent := t.generatePersonaFile(persona)
 		filename := filepath.Join(agentsDir, strings.ToLower(persona.Name)+".ts")
-		if err := t.generator.WriteFile(filename, personaContent); err != nil {
+		if err := t.generator.WriteFile(filename, []byte(personaContent)); err != nil {
 			return fmt.Errorf("failed to write persona %s: %w", persona.Name, err)
 		}
 	}
@@ -47,7 +47,7 @@ func (t *PersonaTransformer) Transform(personas []analyzer.Persona, outputDir st
 	// Generate configuration file
 	configContent := t.generateConfig(personas)
 	configPath := filepath.Join(outputDir, "config", "agents.json")
-	if err := t.generator.WriteFile(configPath, configContent); err != nil {
+	if err := t.generator.WriteFile(configPath, []byte(configContent)); err != nil {
 		return fmt.Errorf("failed to write agents config: %w", err)
 	}
 

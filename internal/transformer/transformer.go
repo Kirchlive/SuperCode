@@ -5,11 +5,12 @@ import (
 
 	"github.com/Kirchlive/SuperCode/internal/analyzer"
 	"github.com/Kirchlive/SuperCode/internal/generator"
+	"github.com/Kirchlive/SuperCode/internal/interfaces"
 )
 
 // Transformer coordinates all transformation operations
 type Transformer struct {
-	generator          *generator.Generator
+	generator          interfaces.Generator
 	personaTransformer *PersonaTransformer
 	commandTransformer *CommandTransformer
 	mcpTransformer     *MCPTransformer
@@ -104,5 +105,5 @@ output/
 4. Customize as needed
 `
 
-	return t.generator.WriteFile(fmt.Sprintf("%s/TRANSFORMATION_SUMMARY.md", outputDir), summary)
+	return t.generator.WriteFile(fmt.Sprintf("%s/TRANSFORMATION_SUMMARY.md", outputDir), []byte(summary))
 }
