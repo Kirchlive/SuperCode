@@ -10,20 +10,22 @@ import (
 
 // Transformer coordinates all transformation operations
 type Transformer struct {
-	generator          interfaces.Generator
-	personaTransformer *PersonaTransformer
-	commandTransformer *CommandTransformer
-	mcpTransformer     *MCPTransformer
+	generator              interfaces.Generator
+	personaTransformer     *PersonaTransformer
+	commandTransformer     *CommandTransformer
+	mcpTransformer         *MCPTransformer
+	compressionTransformer *CompressionTransformer
 }
 
 // NewTransformer creates a new transformer instance
 func NewTransformer() *Transformer {
 	gen := generator.New()
 	return &Transformer{
-		generator:          gen,
-		personaTransformer: NewPersonaTransformer(gen),
-		commandTransformer: NewCommandTransformer(gen),
-		mcpTransformer:     NewMCPTransformer(gen),
+		generator:              gen,
+		personaTransformer:     NewPersonaTransformer(gen),
+		commandTransformer:     NewCommandTransformer(gen),
+		mcpTransformer:         NewMCPTransformer(gen),
+		compressionTransformer: NewCompressionTransformer(gen),
 	}
 }
 
@@ -48,7 +50,12 @@ func (t *Transformer) Transform(result *analyzer.DetectionResult, outputDir stri
 		}
 	}
 
-	// TODO: Transform compression features
+	// Transform compression features
+	if result.CompressionConfig != nil && result.CompressionConfig.Enabled {
+		if err := t.compressionTransformer.Transform(result.CompressionConfig, outputDir); err != nil {
+			return fmt.Errorf("failed to transform compression features: %w", err)
+		}
+	}
 
 	// Transformation completed successfully
 	return nil
@@ -85,6 +92,18 @@ func (t *Transformer) GenerateSummary(result *analyzer.DetectionResult, outputDi
 		}
 	}
 
+	if result.CompressionConfig != nil && result.CompressionConfig.Enabled {
+		summary += fmt.Sprintf(`
+### Compression Feature
+- **Status**: Enabled
+- **Flags**: %v
+- **Performance Target**: %.0f%% token reduction
+- **Natural Language Triggers**: %v
+`, result.CompressionConfig.Flags, 
+   result.CompressionConfig.PerformanceTarget*100,
+   result.CompressionConfig.Triggers.NaturalLanguage)
+	}
+
 	summary += `
 ## Output Structure
 
@@ -93,6 +112,7 @@ output/
 ├── agents/              # Transformed personas
 ├── commands/            # Custom commands
 ├── mcp-servers/         # MCP server implementations
+├── compression/         # Compression feature implementation
 ├── config/              # Configuration files
 └── docs/                # Documentation
 ` + "```" + `

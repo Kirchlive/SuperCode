@@ -73,10 +73,11 @@ type MCPServer struct {
 
 // DetectionResult holds all detected features
 type DetectionResult struct {
-	Personas   []Persona
-	Commands   []Command
-	MCPServers []MCPServer
-	MCPFeature *types.MCPFeature
-	Includes   []IncludeDirective
-	Errors     []error
+	Personas         []Persona
+	Commands         []Command
+	MCPServers       []MCPServer
+	MCPFeature       *types.MCPFeature
+	CompressionConfig *CompressionConfig
+	Includes         []IncludeDirective
+	Errors           []error
 }

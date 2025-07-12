@@ -7,19 +7,22 @@ import (
 
 // Analyzer coordinates all detection operations
 type Analyzer struct {
-	personaDetector *PersonaDetector
-	commandDetector *CommandDetector
-	mcpDetector     *MCPDetector
-	yamlParser      *YAMLParser
+	personaDetector     *PersonaDetector
+	commandDetector     *CommandDetector
+	mcpDetector         *MCPDetector
+	compressionDetector *CompressionDetector
+	yamlParser          *YAMLParser
 }
 
 // NewAnalyzer creates a new analyzer instance
 func NewAnalyzer() *Analyzer {
+	yamlParser := NewYAMLParser()
 	return &Analyzer{
-		personaDetector: NewPersonaDetector(),
-		commandDetector: NewCommandDetector(),
-		mcpDetector:     NewMCPDetector(),
-		yamlParser:      NewYAMLParser(),
+		personaDetector:     NewPersonaDetector(),
+		commandDetector:     NewCommandDetector(),
+		mcpDetector:         NewMCPDetector(),
+		compressionDetector: NewCompressionDetector(yamlParser),
+		yamlParser:          yamlParser,
 	}
 }
 
@@ -59,7 +62,17 @@ func (a *Analyzer) AnalyzeRepository(repoPath string) (*DetectionResult, error) 
 		log.Printf("Found %d MCP servers", len(mcpFeature.Servers))
 	}
 
-	// TODO: Add compression pattern detection
+	// Detect compression features
+	log.Println("Detecting compression features...")
+	compressionConfig, err := a.compressionDetector.Detect(repoPath)
+	if err != nil {
+		result.Errors = append(result.Errors, fmt.Errorf("compression detection: %w", err))
+	} else {
+		result.CompressionConfig = compressionConfig
+		if compressionConfig.Enabled {
+			log.Printf("Found compression feature with %d flags", len(compressionConfig.Flags))
+		}
+	}
 
 	return result, nil
 }
@@ -94,6 +107,17 @@ func (a *Analyzer) PrintSummary(result *DetectionResult) {
 		for cmd, servers := range result.MCPFeature.CommandDefaults {
 			fmt.Printf("  - %s: %v\n", cmd, servers)
 		}
+	}
+
+	if result.CompressionConfig != nil && result.CompressionConfig.Enabled {
+		fmt.Printf("\nCompression Feature:\n")
+		fmt.Printf("  - Enabled: %v\n", result.CompressionConfig.Enabled)
+		fmt.Printf("  - Flags: %v\n", result.CompressionConfig.Flags)
+		fmt.Printf("  - Performance Target: %.0f%% reduction\n", result.CompressionConfig.PerformanceTarget*100)
+		fmt.Printf("  - Natural Language Triggers: %v\n", result.CompressionConfig.Triggers.NaturalLanguage)
+		fmt.Printf("  - Compression Rules: %d symbols, %d abbreviations\n", 
+			len(result.CompressionConfig.Rules.Symbols), 
+			len(result.CompressionConfig.Rules.Abbreviations))
 	}
 
 	if len(result.Errors) > 0 {

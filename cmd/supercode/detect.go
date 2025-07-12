@@ -35,10 +35,10 @@ type DetectionSummary struct {
 
 // DetectedFeatures contains detailed feature information
 type DetectedFeatures struct {
-	Personas    []PersonaInfo    `json:"personas,omitempty"`
-	Commands    []CommandInfo    `json:"commands,omitempty"`
-	MCPServers  []MCPServerInfo  `json:"mcp_servers,omitempty"`
-	OtherFeatures map[string]bool `json:"other_features,omitempty"`
+	Personas    []PersonaInfo       `json:"personas,omitempty"`
+	Commands    []CommandInfo       `json:"commands,omitempty"`
+	MCPServers  []MCPServerInfo     `json:"mcp_servers,omitempty"`
+	OtherFeatures map[string]interface{} `json:"other_features,omitempty"`
 }
 
 // PersonaInfo provides persona details
@@ -283,6 +283,11 @@ func createDetectOutput(result *analyzer.DetectionResult, repoPath string) Detec
 		RepoType:    repoType,
 	}
 	
+	// Check compression feature
+	if result.CompressionConfig != nil && result.CompressionConfig.Enabled {
+		summary.Compression = true
+	}
+	
 	// Check for feature commands
 	for _, cmd := range result.Commands {
 		switch cmd.Name {
@@ -317,7 +322,7 @@ func createDetectOutput(result *analyzer.DetectionResult, repoPath string) Detec
 	
 	// Create features
 	features := DetectedFeatures{
-		OtherFeatures: make(map[string]bool),
+		OtherFeatures: make(map[string]interface{}),
 	}
 	
 	// Add personas
@@ -364,6 +369,12 @@ func createDetectOutput(result *analyzer.DetectionResult, repoPath string) Detec
 	
 	// Add other features
 	features.OtherFeatures["compression"] = summary.Compression
+	
+	// Add compression details if available
+	if result.CompressionConfig != nil && result.CompressionConfig.Enabled {
+		features.OtherFeatures["compression_flags"] = fmt.Sprintf("%v", result.CompressionConfig.Flags)
+		features.OtherFeatures["compression_target"] = fmt.Sprintf("%.0f%%", result.CompressionConfig.PerformanceTarget*100)
+	}
 	features.OtherFeatures["ui_builder"] = summary.UIBuilder
 	features.OtherFeatures["research"] = summary.Research
 	features.OtherFeatures["context7"] = summary.Context7
