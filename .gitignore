@@ -18,6 +18,10 @@ dist/
 coverage.html
 coverage.txt
 
+# Test results (standard structure)
+test-results/
+.test/scripts/*.log
+
 # Go workspace file
 go.work
 

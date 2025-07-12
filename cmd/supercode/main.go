@@ -44,44 +44,19 @@ detects all features, generates compatible code, and builds SuperCode.`,
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize SuperCode configuration",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("🔧 Initializing SuperCode configuration...")
-		// TODO: Create config directory and files
-		fmt.Println("✅ Configuration initialized at ~/.supercode/")
-		return nil
-	},
+	Long: `Initialize SuperCode configuration directory and files.
+Creates ~/.supercode/ with default configuration, templates, and workspace.`,
+	RunE: runInit,
 }
 
 // detectCmd represents the detect command
 var detectCmd = &cobra.Command{
 	Use:   "detect [path]",
 	Short: "Detect features in repositories",
+	Long: `Analyze a repository to detect SuperClaude or OpenCode features.
+Provides detailed information about personas, commands, MCP servers, and other capabilities.`,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("🔍 Detecting features...")
-		
-		repoPath := args[0]
-		
-		// Create absolute path
-		absPath, err := filepath.Abs(repoPath)
-		if err != nil {
-			return fmt.Errorf("failed to resolve path: %w", err)
-		}
-		
-		// Create analyzer
-		analyzer := analyzer.NewAnalyzer()
-		
-		// Analyze repository
-		result, err := analyzer.AnalyzeRepository(absPath)
-		if err != nil {
-			return fmt.Errorf("failed to analyze repository: %w", err)
-		}
-		
-		// Print results
-		analyzer.PrintSummary(result)
-		
-		return nil
-	},
+	RunE: runDetect,
 }
 
 func init() {
@@ -106,6 +81,12 @@ func init() {
 	mergeCmd.Flags().Bool("skip-build", false, "skip building the binary")
 	mergeCmd.Flags().Bool("skip-typescript", false, "skip TypeScript compilation")
 	mergeCmd.Flags().Bool("skip-tests", false, "skip running tests")
+	
+	// Init command flags
+	initInitFlags()
+	
+	// Detect command flags
+	initDetectFlags()
 }
 
 // initConfig reads in config file and ENV variables if set
