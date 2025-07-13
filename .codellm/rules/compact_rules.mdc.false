@@ -1,0 +1,272 @@
+---
+description: Universal Compact Summary Rules
+globs: **/*
+alwaysApply: true
+---
+
+# Universal Compact Summary Rules
+
+## Core Structure Requirements
+
+When creating compact summaries, ALWAYS use this standardized format to ensure consistency and comprehensive coverage across all repositories and project types.
+
+### Primary Summary Format
+
+Use this structure for all compact summaries:
+
+```markdown
+**Summary Number: [X]**
+
+# Compact Summary [NUMBER] - [PROJECT_NAME] [SESSION_TYPE]
+
+## Session Overview
+- **Date**: [YYYY-MM-DD]
+- **Duration**: [Time period]
+- **Primary Objective**: [Main goal]
+- **Session Type**: [Analysis/Development/Documentation/Debugging/etc.]
+
+## Analysis
+### 1. **Initial Context**
+[Starting state and background]
+
+### 2. **Chronological Progression**
+[Sequential development phases with timestamps]
+
+### 3. **User Feedback Integration**
+[How user input shaped the session]
+
+### 4. **Technical Implementation Details**
+[Key technical decisions and approaches]
+
+## Summary Breakdown
+### 1. **Primary Request and Intent**
+[What was originally requested and why]
+
+### 2. **Key Technical Concepts**
+[Technologies, frameworks, patterns used]
+
+### 3. **Files and Code Sections**
+[All files modified/created with descriptions]
+
+### 4. **Errors and Fixes**
+[Problems encountered and resolution methods]
+
+### 5. **Problem Solving Approach**
+[Methodology and decision-making process]
+
+### 6. **All User Messages**
+[Complete interaction summary and feedback]
+
+### 7. **Pending Tasks**
+[Unfinished work and blockers]
+
+### 8. **Current Work Status**
+[Present state of the project]
+
+### 9. **Optional Next Steps**
+[Recommended future actions]
+
+## Development Phases
+### Phase 1: [PHASE_NAME]
+[Detailed description of work completed]
+
+### Phase 2: [PHASE_NAME]
+[Continue for all relevant phases]
+
+## File Change Tracking
+### [FILENAME] Changes Summary
+#### Original State
+[Description of file before changes]
+
+#### Changes Applied
+**Added Content:**
+1. **[SECTION_NAME]** (lines X-Y)
+2. **[FEATURE_NAME]** (lines X-Y)
+
+**Modified Content:**
+1. **[SECTION_NAME]** (lines X-Y)
+
+**Removed Content:**
+1. **[SECTION_NAME]** (lines X-Y)
+
+### Current File Status
+[Present state of all modified files]
+
+## Project Metrics
+- **Files Modified**: [number]
+- **Lines Added**: [number]
+- **Lines Removed**: [number]
+- **Test Coverage**: [percentage]
+- **Build Status**: [passing/failing]
+- **Commit Count**: [number]
+
+## Task Completion Status
+### Completed Tasks
+- [ ] Task 1: [Description]
+- [ ] Task 2: [Description]
+
+### In Progress Tasks
+- [ ] Task 1: [Description and current status]
+
+### Pending Tasks
+- [ ] Task 1: [Description and priority]
+
+## Technical Stack Summary
+- **Languages**: [List]
+- **Frameworks**: [List]
+- **Tools**: [List]
+- **Dependencies**: [Major ones]
+
+## Next Recommended Actions
+1. **Immediate (Priority 1)**:
+   - [Action with rationale]
+
+2. **Short-term (Priority 2)**:
+   - [Action with rationale]
+
+3. **Long-term (Priority 3)**:
+   - [Action with rationale]
+
+---
+*Session saved: [TIMESTAMP]*
+*Total session duration: [TIME]*
+*Next session focus: [TOPIC]*
+```
+
+## Special Format Rules
+
+### For README.md Changes
+When tracking README changes, use this enhanced format:
+
+```markdown
+## README.md Evolution Tracking
+### [REPOSITORY_NAME]/README.md Change History
+#### Commit: [COMMIT_HASH]
+**Changes Applied:**
+1. **[SECTION_NAME]** (line X)
+   - Added: [Description]
+   - Modified: [Description]
+   - Removed: [Description]
+```
+
+### For Multi-Phase Development
+For complex development sessions spanning multiple phases:
+
+```markdown
+## Development Progression
+### Phase 1: [ANALYSIS_PHASE]
+- **Objective**: [Goal]
+- **Key Findings**: [Results]
+- **Time Spent**: [Duration]
+
+### Phase 2: [IMPLEMENTATION_PHASE]
+- **Objective**: [Goal]
+- **Work Completed**: [Results]
+- **Challenges**: [Issues faced]
+
+### Phase 3: [TESTING_PHASE]
+- **Coverage Achieved**: [Percentage]
+- **Tests Added**: [Number]
+- **Issues Found**: [List]
+```
+
+### For Bug Fixing Sessions
+Special structure for debugging and error resolution:
+
+```markdown
+## Error Analysis and Resolution
+### Initial Error State
+- **Error Type**: [Classification]
+- **Error Message**: [Exact text]
+- **Affected Components**: [List]
+
+### Investigation Process
+1. **Root Cause Analysis**: [Process]
+2. **Testing Approach**: [Method]
+3. **Solution Strategy**: [Approach]
+
+### Resolution Implementation
+- **Fix Applied**: [Description]
+- **Testing Verification**: [Results]
+- **Side Effects**: [Any impacts]
+```
+
+## Content Guidelines
+
+### Language and Tone
+- Use clear, concise language
+- Focus on actionable information
+- Maintain professional but accessible tone
+- Use bullet points for scannability
+
+### Technical Details
+- Include specific file paths
+- Document configuration changes
+- Note dependency updates
+- Record environment changes
+
+### User Interaction Documentation
+- Capture all user feedback
+- Note preference changes
+- Document learning opportunities
+- Record collaboration insights
+
+### Context Preservation
+- Include enough detail for session resumption
+- Document decision rationale
+- Preserve important discussions
+- Note environmental constraints
+
+## Metadata Requirements
+
+### Always Include
+- Session start/end timestamps
+- Primary programming languages used
+- Major frameworks/tools involved
+- Key files modified
+- Test status and coverage
+- Build/deployment status
+
+### Repository-Specific
+- Project architecture notes
+- Team collaboration patterns
+- Deployment procedures
+- Testing strategies
+- Code review processes
+
+## Quality Assurance
+
+### Before Finalizing Summary
+- [ ] All sections completed
+- [ ] File changes documented
+- [ ] Next steps clearly defined
+- [ ] Technical details accurate
+- [ ] User feedback captured
+- [ ] Metrics included where relevant
+
+### Post-Summary Actions
+- [ ] Save to appropriate location
+- [ ] Update project documentation
+- [ ] Notify team if collaborative
+- [ ] Schedule follow-up if needed
+
+## Integration with Claude Code Workflow
+
+### During Session
+- Use `/compact` command with specific focus areas
+- Reference this format for consistency
+- Update summary incrementally for long sessions
+
+### Between Sessions
+- Review previous summaries before starting
+- Use summaries to prime new sessions
+- Update CLAUDE.md based on learnings
+
+### Team Collaboration
+- Share summaries in standardized format
+- Use consistent naming conventions
+- Include summaries in project documentation
+
+---
+
+**Note**: This format adapts to any repository type, programming language, or project scope. Customize section priorities based on session complexity and project requirements.

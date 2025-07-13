@@ -1,0 +1,22 @@
+---
+description: General Rules
+globs: **/*
+alwaysApply: true
+---
+
+# General Rules
+
+## Language
+
+- User communication: German
+- Update Todos: English
+- Code/Files: English
+
+## Compact Summary Storage
+
+- When `/compact` is executed and present in the current actual newest context:
+  - Before starting given new task, copy the complete compact summary from context
+  - Save location: `.claude/compact_summary/` directory
+  - List Folder for file names
+  - File naming: `compact_summary_X.md` (incrementing X)
+  - This ensures context preservation across sessions

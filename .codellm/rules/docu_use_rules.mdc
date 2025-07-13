@@ -1,0 +1,50 @@
+---
+description: Documentation Workflow for SuperCode Project
+globs: **/*
+alwaysApply: true
+---
+
+# Documentation Usage Rules
+
+## 📖 Documentation Usage Guide
+
+### Documentation Reference Matrix
+
+| Purpose | Primary File | Secondary Files | Update Frequency | When to Consult |
+|---------|-------------|-----------------|------------------|-----------------|
+| **Current State** | STATUS.md | CHANGELOG.md | After each task | Starting work, checking blockers |
+| **Planning** | PLANNING.md | STATUS.md | Weekly/Phase end | Finding next task, timeline check |
+| **Technical Design** | ARCHITECTURE.md | FEATURE-MAPPING.md | On design changes | Before coding, design decisions |
+| **Setup & Usage** | SETUP.md | README.md | On env changes | Initial setup, tool updates |
+| **Project Overview** | README.md | CLAUDE.md | Rarely | New to project, major updates |
+
+💡 **Efficiency Note**: Only read files that are not already in your current context. Re-reading files wastes tokens and time. Trust your existing knowledge unless explicitly asked to refresh or when the file has been modified.
+
+### Documentation Update Workflow
+
+#### Update Priority Order
+1. **STATUS.md** - Always update first (metrics, issues, progress)
+2. **CHANGELOG.md** - Immediately after STATUS (chronological record)
+3. **Other files** - As affected by changes
+
+#### Specific Update Scenarios
+
+| Scenario | Required Updates | Optional Updates | Timing |
+|----------|-----------------|------------------|---------|
+| **Task Completed** | STATUS.md, CHANGELOG.md | PLANNING.md (if milestone) | Immediately |
+| **Bug Fixed** | STATUS.md (remove issue), CHANGELOG.md | ARCHITECTURE.md (if design affected) | Before commit |
+| **Feature Added** | STATUS.md, CHANGELOG.md, FEATURE-MAPPING.md | ARCHITECTURE.md, README.md | After testing |
+| **Design Change** | ARCHITECTURE.md, CHANGELOG.md | FEATURE-MAPPING.md, STATUS.md | Before implementation |
+| **Phase Complete** | All affected docs | Archive outdated content | End of week/phase |
+
+#### Update Exceptions (When NOT to Update)
+- ❌ Exploratory/research tasks without code changes
+- ❌ Minor refactoring without functional changes
+- ❌ Documentation-only fixes (only update CHANGELOG.md)
+- ❌ Work in progress (wait until task complete)
+
+#### Timing Guidelines
+- **Immediately**: STATUS.md after task completion
+- **Daily**: CHANGELOG.md with day's changes
+- **Weekly**: PLANNING.md progress review
+- **Phase-end**: Full documentation consistency check

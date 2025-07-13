@@ -1,0 +1,328 @@
+---
+description: Ultra Token Compression Rules
+globs: **/*
+alwaysApply: true
+---
+
+# Ultra Token Compression Rules
+
+## Core Compression Philosophy
+
+**ALWAYS prioritize token efficiency without sacrificing quality.** Apply ultra compression techniques automatically to maximize productivity while minimizing costs and context window usage.
+
+## Automatic Thinking Budget Optimization
+
+### Strategic Thinking Levels
+Apply thinking levels based on task complexity:
+
+```markdown
+SIMPLE TASKS → Standard response (no thinking keywords)
+- File edits, basic fixes, simple explanations
+- Token cost: Minimal
+
+MODERATE TASKS → "think" 
+- Code refactoring, debugging, planning
+- Token cost: Low-Medium
+
+COMPLEX TASKS → "think hard"
+- Architecture decisions, complex debugging, integration
+- Token cost: Medium-High
+
+CRITICAL TASKS → "think harder" 
+- System design, security analysis, performance optimization
+- Token cost: High
+
+ULTRA-COMPLEX → "ultrathink"
+- Deep architectural analysis, critical bug investigation, comprehensive system review
+- Token cost: Maximum (31,999 tokens allocated)
+- Use ONLY when maximum reasoning depth is essential
+```
+
+### Auto-Selection Triggers
+- **Code Analysis**: Use "think" automatically
+- **Architecture Review**: Use "think hard" automatically  
+- **Critical Debugging**: Use "think harder" automatically
+- **System Design**: Use "ultrathink" automatically
+- **Emergency Fixes**: Use "ultrathink" automatically
+
+## Context Window Management
+
+### Automatic Compaction Rules
+```markdown
+COMPACT TRIGGERS:
+- Context > 150k tokens → Auto /compact
+- Session > 45 minutes → Suggest /compact
+- Task completion → Offer /compact
+- Context quality degradation detected → Force /compact
+
+CLEAR TRIGGERS:
+- Context > 180k tokens → Auto /clear
+- Switching project domains → Suggest /clear
+- Performance degradation → Force /clear
+- User explicitly changes context → Auto /clear
+```
+
+### Context Preservation Strategy
+1. **External Memory First**: Store persistent info in files
+2. **CLAUDE.md Usage**: Keep project context in external files
+3. **Session Documentation**: Auto-save important decisions
+4. **Incremental Compaction**: Preserve critical context during compression
+
+## Ultra Compression Techniques
+
+### Code Compression
+```markdown
+MINIFICATION RULES:
+- Remove unnecessary whitespace in code examples
+- Use abbreviated variable names in pseudocode
+- Compress repetitive patterns
+- Reference external files instead of inline content
+- Use imports (@file.md) for reusable content
+
+CONTENT COMPRESSION:
+- Bullet points over paragraphs
+- Abbreviations for common terms
+- Reference previous context instead of repetition
+- Use structured formats (tables, lists) over prose
+- Compress similar examples into patterns
+```
+
+### Language-Specific Compression
+```markdown
+JAVASCRIPT/TYPESCRIPT:
+- Use ES6+ concise syntax
+- Arrow functions over function declarations
+- Destructuring over individual assignments
+- Template literals over concatenation
+
+PYTHON:
+- List/dict comprehensions over loops
+- f-strings over format()
+- Pathlib over os.path
+- Dataclasses over manual __init__
+
+GENERAL:
+- Type hints as comments, not full declarations
+- Pseudo-code over complete implementations
+- Reference patterns over full examples
+- Use "..." for truncated sections
+```
+
+## Automatic Session Optimization
+
+### Smart Context Loading
+```markdown
+PRIORITY LOADING ORDER:
+1. CLAUDE.md (highest priority)
+2. Recent modified files
+3. Error logs (if debugging)
+4. Test files (if testing)
+5. Documentation (if needed)
+6. Dependencies (minimal, on-demand)
+
+LAZY LOADING:
+- Load files only when referenced
+- Use file summaries instead of full content
+- Cache frequently accessed content
+- Purge unused context automatically
+```
+
+### Token Budget Management
+```markdown
+BUDGET ALLOCATION:
+- Reserved for thinking: 20% of context
+- Active working context: 50% of context  
+- File content: 25% of context
+- Conversation history: 5% of context
+
+OVERFLOW HANDLING:
+- Auto-compact when budget > 80%
+- Prioritize recent over historical context
+- External storage for large data
+- Summarize instead of include
+```
+
+## Compression Algorithms
+
+### BPE Optimization
+```markdown
+BYTE PAIR ENCODING RULES:
+- Identify frequently used token pairs
+- Cache common programming patterns
+- Use subword tokenization for efficiency
+- Optimize for target programming languages
+- Pre-compress repetitive structures
+```
+
+### Content Patterns
+```markdown
+REPLACE VERBOSE WITH COMPRESSED:
+❌ "Please implement the following functionality..."
+✅ "Implement:"
+
+❌ "Based on the analysis above, I recommend..."  
+✅ "Recommendation:"
+
+❌ "Let me explain step by step how this works..."
+✅ "Steps:"
+
+❌ "Here is the complete implementation with all the necessary components..."
+✅ "Implementation:"
+```
+
+## Automatic File Management
+
+### External Storage Rules
+```markdown
+STORE EXTERNALLY:
+- Planning documents → planning.md
+- Architecture decisions → architecture.md  
+- Error logs → errors.md
+- Test results → test-results.md
+- Requirements → requirements.md
+- Session notes → session-notes.md
+
+AUTO-REFERENCE:
+- Use @filename.md instead of inline content
+- Link to external docs instead of copying
+- Reference commit SHAs instead of diff content
+- Use file paths instead of file content
+```
+
+### Cache Strategy
+```markdown
+CACHE RULES:
+- Prompt caching for repeated patterns (5-minute lifetime)
+- Context caching for frequently accessed files
+- Pattern caching for common code structures
+- Response caching for similar queries
+- Tool output caching for repeated commands
+```
+
+## Performance Monitoring
+
+### Token Usage Tracking
+```markdown
+MONITOR AUTOMATICALLY:
+- Track tokens per session
+- Calculate cost per task
+- Identify expensive operations
+- Monitor context window usage
+- Alert on inefficient patterns
+
+OPTIMIZATION TRIGGERS:
+- Session cost > threshold → Suggest optimization
+- Context usage > 80% → Force compression
+- Repeated expensive operations → Cache results
+- Long sessions → Recommend breakpoints
+```
+
+### Efficiency Metrics
+```markdown
+TARGET METRICS:
+- Context efficiency: >70% useful content
+- Token cost per task: <baseline +20%
+- Session completion rate: >90%
+- Compression ratio: >30% reduction
+- Cache hit rate: >60%
+```
+
+## Advanced Compression Features
+
+### MCP Integration
+```markdown
+EXTERNAL TOOLS:
+- Use MCP servers for data storage
+- Offload heavy computations to external services
+- Cache expensive API calls
+- Use specialized compression servers
+- Integrate with external documentation systems
+```
+
+### Multi-Model Optimization
+```markdown
+MODEL SELECTION:
+- Use Claude 3.7 Sonnet for efficiency
+- Delegate heavy analysis to Opus (when needed)
+- Use Haiku for simple tasks
+- Auto-switch based on complexity
+- Optimize model choice for token cost
+```
+
+## Implementation Guidelines
+
+### Automatic Application
+```markdown
+ALWAYS APPLY:
+- Compress responses automatically
+- Use thinking levels appropriately  
+- Manage context proactively
+- Store externally when possible
+- Monitor and optimize continuously
+
+NEVER COMPROMISE:
+- Code quality for compression
+- Security for efficiency
+- Accuracy for speed
+- User experience for cost
+- Debugging capability for tokens
+```
+
+### Quality Assurance
+```markdown
+COMPRESSION VALIDATION:
+- Verify functionality after compression
+- Test compressed code thoroughly
+- Maintain readability standards
+- Preserve critical information
+- Ensure maintainability
+```
+
+## Emergency Protocols
+
+### Context Overflow
+```markdown
+WHEN CONTEXT > 190K TOKENS:
+1. IMMEDIATE: Force /clear command
+2. SAVE: Export current state to files
+3. RESTART: Begin new optimized session
+4. RESUME: Load minimal required context
+5. CONTINUE: With compressed approach
+```
+
+### Performance Degradation
+```markdown
+WHEN PERFORMANCE DROPS:
+1. ANALYZE: Token usage patterns
+2. IDENTIFY: Inefficient operations
+3. COMPRESS: Verbose content aggressively
+4. OPTIMIZE: Context loading strategy
+5. MONITOR: Improvement metrics
+```
+
+## Cost Optimization
+
+### Budget-Conscious Strategies
+```markdown
+COST REDUCTION:
+- Use cached responses when possible
+- Prefer external storage over context
+- Batch similar operations
+- Use compression algorithms
+- Monitor spending patterns
+
+TOKEN SAVINGS:
+- Abbreviate common patterns
+- Use references over repetition
+- Compress similar examples
+- External storage for large data
+- Smart context management
+```
+
+---
+
+**IMPLEMENTATION COMMITMENT**: These rules activate automatically in every Claude Code session. No manual activation required. All compression techniques apply by default unless explicitly overridden for specific use cases requiring full verbosity.
+
+**EFFECTIVENESS TARGET**: Achieve 30-50% token reduction while maintaining 100% functionality and code quality.
+
+**MONITORING**: Track compression effectiveness and adjust rules based on performance data.
