@@ -1,0 +1,6 @@
+[submodule "SuperClaude"]
+	path = SuperClaude
+	url = https://github.com/NomenAK/SuperClaude.git
+[submodule "OpenCode"]
+	path = OpenCode
+	url = https://github.com/sst/opencode.git
