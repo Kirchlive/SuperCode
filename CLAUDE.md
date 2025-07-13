@@ -6,17 +6,19 @@ This file provides guidance to Claude Code when working with the SuperCode merge
 
 **Read all Project Rules files as next task after CLAUDE.md:**
 
-2. Read("/Users/rob/Development/SuperCode-Project/README.md")
+1. Read("/Users/rob/Development/SuperCode-Project/README.md")
+2. Read("/Users/rob/Development/SuperCode-Project/SuperCode/README.md")
 3. Read("/Users/rob/Development/SuperCode-Project/.codellm/rules/general_rules.mdc")
 
 ## Repository Overview
 
 This is the **SuperCode merger repository** that combines SuperClaude and OpenCode features into a unified system.
 
+
+
 - **Purpose**: One-time merge tool for feature detection, code generation, and integration
 - **Technology**: Go-based merger with intelligent feature detection
 - **Goal**: Create a unified SuperCode CLI with all SuperClaude features in OpenCode
-- **GitHub Repository**: https://github.com/Kirchlive/SuperCode
 
 ## 📁 Project Structure
 

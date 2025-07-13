@@ -2,6 +2,14 @@
 
 Eine Sammlung aller verwendeten Commands mit Flags zur Dokumentations-Reorganisation und Projekt-Optimierung.
 
+## 📂 Template Management
+
+### 1. Template-Integration und Organisation
+```bash
+/analyze --code "WORKFLOW_Template.md DECISIONS_Template.md" --structure --purpose && /migrate --files "*_Template.md" --target "docs/templates/" --create-dir --validate && /document --index --create "docs/templates/README.md" --from-templates --uc
+```
+**Beschreibung**: Analysiert Template-Struktur, verschiebt sie in docs/templates/ und erstellt eine Index-Datei für alle Templates.
+
 ## 📚 README Enhancement
 
 ### 1. Professionelle README-Erstellung
