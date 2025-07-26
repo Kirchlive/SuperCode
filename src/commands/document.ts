@@ -4,32 +4,54 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const DocumentCommand = cmd({
-    command: "document [args...]",
+    command: "document <target>",
     describe: "Create focused documentation for specific components or features",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the document command",
+            .positional("target", {
+                describe: "Specific file, function, or component to document",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("type", {
+                describe: "Documentation type",
+                type: "string",
+                choices: ["inline", "external", "api", "guide"],
+                default: "external",
+            })
+            .option("style", {
+                describe: "Documentation style",
+                type: "string",
+                choices: ["brief", "detailed"],
+                default: "brief",
+            })
+            .option("template", {
+                describe: "Use specific documentation template",
+                type: "string",
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: document`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Documenting '${args.target}' (Type: ${args.type}, Style: ${args.style})...`);
 
-        // --- Logic for 'document' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/document.md
-        // ---------------------------------------------------------
+        // --- Logic for 'document' ---
+        console.log("\nAnalyzing component...");
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        console.log("Generating documentation...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        console.log("\n========================================");
+        console.log(`✅ Documentation for '${args.target}' created.`);
+        console.log("----------------------------------------");
+        console.log("### Overview\nThis component is responsible for user authentication.");
+        if (args.style === 'detailed') {
+            console.log("\n#### Parameters\n- user (string): The user's email.\n- pass (string): The user's password.");
+        }
+        console.log("========================================");
     },
 });

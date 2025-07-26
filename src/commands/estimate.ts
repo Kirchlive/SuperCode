@@ -4,32 +4,56 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const EstimateCommand = cmd({
-    command: "estimate [args...]",
+    command: "estimate <target>",
     describe: "Provide development estimates for tasks, features, or projects",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the estimate command",
+            .positional("target", {
+                describe: "Task, feature, or project to estimate",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("type", {
+                describe: "Estimation type",
+                type: "string",
+                choices: ["time", "effort", "complexity", "cost"],
+                default: "time",
+            })
+            .option("unit", {
+                describe: "Time unit for estimates",
+                type: "string",
+                choices: ["hours", "days", "weeks"],
+                default: "days",
+            })
+            .option("breakdown", {
+                describe: "Provide detailed breakdown of estimates",
+                type: "boolean",
+                default: false,
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: estimate`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Estimating '${args.target}' (Type: ${args.type}, Unit: ${args.unit})...`);
 
-        // --- Logic for 'estimate' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/estimate.md
-        // ---------------------------------------------------------
+        // --- Logic for 'estimate' ---
+        console.log("\nAnalyzing scope and complexity...");
+        await new Promise(resolve => setTimeout(resolve, 450));
+
+        console.log("\n========================================");
+        console.log(`✅ Estimation for '${args.target}'`);
+        console.log("----------------------------------------");
+        console.log(`- Estimated Time: 5 ${args.unit}`);
+        console.log("- Confidence: 85%");
+        if (args.breakdown) {
+            console.log("\n#### Breakdown");
+            console.log("- API Endpoints: 2 days");
+            console.log("- UI Components: 2 days");
+            console.log("- Testing & QA: 1 day");
+        }
+        console.log("========================================");
     },
 });

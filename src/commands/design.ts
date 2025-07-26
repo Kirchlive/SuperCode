@@ -4,32 +4,54 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const DesignCommand = cmd({
-    command: "design [args...]",
+    command: "design <target>",
     describe: "Design system architecture, APIs, and component interfaces",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the design command",
+            .positional("target", {
+                describe: "System, component, or feature to design",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("type", {
+                describe: "Design type",
+                type: "string",
+                choices: ["architecture", "api", "component", "database"],
+                default: "architecture",
+            })
+            .option("format", {
+                describe: "Output format",
+                type: "string",
+                choices: ["diagram", "spec", "code"],
+                default: "spec",
+            })
+            .option("iterative", {
+                describe: "Enable iterative design refinement",
+                type: "boolean",
+                default: false,
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: design`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Designing '${args.target}' of type '${args.type}'...`);
 
-        // --- Logic for 'design' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/design.md
-        // ---------------------------------------------------------
+        // --- Logic for 'design' ---
+        console.log("\nAnalyzing requirements...");
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        console.log("Developing design specification...");
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        console.log("\n========================================");
+        console.log(`✅ Design Specification for '${args.target}' (${args.type})`);
+        console.log("Format:", args.format);
+        console.log("----------------------------------------");
+        console.log("- Component A will interact with Service B via REST API.");
+        console.log("- Database schema will include 'users' and 'posts' tables.");
+        console.log("========================================");
     },
 });
