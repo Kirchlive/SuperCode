@@ -1,0 +1,21 @@
+{
+  "name": "supercode",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts",
+    "generate:commands": "bun run scripts/pipeline/generate-commands.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/ejs": "^3.1.5",
+    "@types/glob": "^9.0.0",
+    "ejs": "^3.1.10",
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
