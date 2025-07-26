@@ -1,0 +1,35 @@
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Bun
+.bun
+
+# Build output
+dist
+build
+out
+
+# Test Results
+/test_results/
+# Keep the directory but ignore its contents
+!/test_results/.gitkeep
+
+# External Dependencies
+# The submodule itself is tracked by .gitmodules, not the contents
+/external/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Editor-specific
+.vscode/
+.idea/
