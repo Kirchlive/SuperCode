@@ -15,12 +15,18 @@ const AnalyzeCommand = cmd({
             .option("focus", { alias: "f", describe: "The specific area to focus on", type: "string" })
             .option("mode", { alias: "m", describe: "The operational mode", type: "string" });
     },
-    handler: async (args) => {
-        // Initialize the orchestrator with the real file system reader
+handler: async (args) => {
         await Orchestrator.initialize(realFileReader);
         const orchestrator = Orchestrator.getInstance();
         
-        const systemPrompt = await orchestrator.getSystemPrompt(args.persona);
+        let personaId = args.persona;
+        if (!personaId) {
+            const userInput = args.files.join(' ');
+            personaId = orchestrator.detectPersona(userInput);
+        }
+        
+        const systemPrompt = await orchestrator.getSystemPrompt(personaId);
+        
         console.log(systemPrompt);
     },
 });

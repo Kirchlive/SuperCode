@@ -17,7 +17,13 @@ const DocumentCommand = cmd({
         await Orchestrator.initialize(realFileReader);
         const orchestrator = Orchestrator.getInstance();
         
-        const systemPrompt = await orchestrator.getSystemPrompt(args.persona);
+        let personaId = args.persona;
+        if (!personaId) {
+            const userInput = args.files.join(' ');
+            personaId = orchestrator.detectPersona(userInput);
+        }
+        
+        const systemPrompt = await orchestrator.getSystemPrompt(personaId);
         
         console.log(systemPrompt);
     },

@@ -18,6 +18,20 @@ const CORE_PROMPT_FILES = ['CLAUDE.md', 'RULES.md', 'PRINCIPLES.md'];
 
 interface Persona { id: string; name: string; prompt: string; }
 
+const personaKeywords: Record<string, string[]> = {
+    architect: ["architecture", "design", "scalability"],
+    frontend: ["component", "responsive", "accessibility"],
+    backend: ["api", "database", "service", "reliability"],
+    analyzer: ["analyze", "investigate", "root cause"],
+    security: ["vulnerability", "threat", "compliance"],
+    mentor: ["explain", "learn", "understand"],
+    refactorer: ["refactor", "cleanup", "technical debt"],
+    performance: ["optimize", "performance", "bottleneck"],
+    qa: ["test", "quality", "validation"],
+    devops: ["deploy", "infrastructure", "automation"],
+    scribe: ["document", "write", "guide"],
+};
+
 export class Orchestrator {
     private static instance: Orchestrator;
     private baseSystemPrompt: string | null = null;
@@ -58,14 +72,13 @@ export class Orchestrator {
             const content = await reader.readFile(path.join(SUPERCODE_BASE_PATH, 'src/personas.json'));
             const parsedData: Record<string, any> = JSON.parse(content);
             
-            // Transform the loaded data to match the Persona interface
             const transformedPersonas: Record<string, Persona> = {};
             for (const key in parsedData) {
                 const original = parsedData[key];
                 transformedPersonas[key] = {
                     id: original.id,
                     name: original.name,
-                    prompt: original.system_prompt // Map system_prompt to prompt
+                    prompt: original.system_prompt
                 };
             }
             this.personas = transformedPersonas;
@@ -82,5 +95,17 @@ export class Orchestrator {
             finalPrompt += `\n\n--- PERSONA: ${p.name.toUpperCase()} ---\n\n${p.prompt}`;
         }
         return finalPrompt;
+    }
+
+    public detectPersona(userInput: string): string | null {
+        const lowerInput = userInput.toLowerCase();
+        for (const personaId in personaKeywords) {
+            for (const keyword of personaKeywords[personaId]) {
+                if (lowerInput.includes(keyword)) {
+                    return personaId;
+                }
+            }
+        }
+        return null;
     }
 }
