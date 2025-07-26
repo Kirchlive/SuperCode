@@ -6,7 +6,6 @@
   "scripts": {
     "start": "bun run index.ts",
     "generate:commands": "bun run scripts/pipeline/generate-commands.ts",
-    "map:logic": "bun run scripts/pipeline/map-logic.ts",
     "migrate:configs": "bun run scripts/pipeline/migrate-configs.ts",
     "import": "bun run scripts/pipeline/orchestrator.ts",
     "test": "bun test"
@@ -18,12 +17,11 @@
     "ejs": "^3.1.10",
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3",
-    "ts-morph": "^26.0.0"
+    "yargs": "^17.7.2",
+    "@types/yargs": "^17.0.32"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {
-    "commander": "^14.0.0"
-  }
+  "dependencies": {}
 }
