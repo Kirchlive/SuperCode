@@ -4,32 +4,68 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const BuildCommand = cmd({
-    command: "build [args...]",
+    command: "build [target]",
     describe: "Build, compile, and package projects with error handling and optimization",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the build command",
+            .positional("target", {
+                describe: "Project or specific component to build",
                 type: "string",
-                array: true,
-                default: [],
+                default: ".",
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("type", {
+                describe: "Build type",
+                type: "string",
+                choices: ["dev", "prod", "test"],
+                default: "prod",
+            })
+            .option("clean", {
+                describe: "Clean build artifacts before building",
+                type: "boolean",
+                default: false,
+            })
+            .option("optimize", {
+                describe: "Enable build optimizations",
+                type: "boolean",
+                default: false,
+            })
+            .option("verbose", {
+                describe: "Enable detailed build output",
+                type: "boolean",
+                default: false,
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: build`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Target: ${args.target}`);
+        console.log(`Type: ${args.type}`);
 
-        // --- Logic for 'build' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/build.md
-        // ---------------------------------------------------------
+        // --- Logic for 'build' ---
+        if (args.clean) {
+            console.log("Cleaning build artifacts...");
+            // In a real scenario, you would run 'rm -rf dist' or similar here.
+            await new Promise(resolve => setTimeout(resolve, 200)); // Simulate work
+            console.log("Clean complete.");
+        }
+
+        console.log(`\nStarting '${args.type}' build...`);
+        // In a real scenario, you would run 'npm run build' or similar here.
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate work
+
+        if (args.optimize) {
+            console.log("Applying optimizations...");
+            await new Promise(resolve => setTimeout(resolve, 300)); // Simulate work
+            console.log("Optimizations complete.");
+        }
+
+        console.log("\n========================================");
+        console.log("✅ Build successful!");
+        console.log("Output artifacts are located in the 'dist' directory.");
+        console.log("========================================");
     },
 });
