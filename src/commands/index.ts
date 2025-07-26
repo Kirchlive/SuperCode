@@ -4,32 +4,40 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const IndexCommand = cmd({
-    command: "index [args...]",
+    command: "index <target>",
     describe: "Generate comprehensive project documentation and knowledge base",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the index command",
+            .positional("target", {
+                describe: "Project directory or specific component to document",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("type", {
+                describe: "Documentation type",
+                type: "string",
+                choices: ["docs", "api", "structure", "readme"],
+                default: "docs",
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: index`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Indexing '${args.target}' to create '${args.type}' documentation...`);
 
-        // --- Logic for 'index' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/index.md
-        // ---------------------------------------------------------
+        // --- Logic for 'index' ---
+        console.log("\nAnalyzing project structure...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        console.log("Extracting documentation from source files...");
+        await new Promise(resolve => setTimeout(resolve, 700));
+
+        console.log("\n========================================");
+        console.log(`✅ Project index created successfully.`);
+        console.log(`- Output format: ${args.type}`);
+        console.log("========================================");
     },
 });

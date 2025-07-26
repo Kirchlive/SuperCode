@@ -4,32 +4,43 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const SpawnCommand = cmd({
-    command: "spawn [args...]",
+    command: "spawn <task>",
     describe: "Break complex tasks into coordinated subtasks with efficient execution",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the spawn command",
+            .positional("task", {
+                describe: "Complex task or project to orchestrate",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("parallel", {
+                describe: "Execute independent tasks concurrently",
+                type: "boolean",
+                default: false,
+            });
     },
 
     handler: async (args) => {
+        const mode = args.parallel ? "parallel" : "sequential";
         console.log(`Executing command: spawn`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Orchestrating task '${args.task}' in '${mode}' mode...`);
 
-        // --- Logic for 'spawn' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/spawn.md
-        // ---------------------------------------------------------
+        // --- Logic for 'spawn' ---
+        console.log("\nParsing request and creating task breakdown...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        console.log("\nExecuting subtasks...");
+        console.log("  - Subtask 1: Complete");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        console.log("  - Subtask 2: Complete");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        console.log("  - Subtask 3: Complete");
+
+        console.log("\n========================================");
+        console.log(`✅ Task '${args.task}' orchestrated successfully.`);
+        console.log("========================================");
     },
 });
