@@ -4,32 +4,47 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const ExplainCommand = cmd({
-    command: "explain [args...]",
+    command: "explain <target>",
     describe: "Provide clear explanations of code, concepts, or system behavior",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the explain command",
+            .positional("target", {
+                describe: "Code file, function, concept, or system to explain",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("level", {
+                describe: "Explanation complexity",
+                type: "string",
+                choices: ["basic", "intermediate", "advanced"],
+                default: "basic",
+            })
+            .option("format", {
+                describe: "Output format",
+                type: "string",
+                choices: ["text", "diagram", "examples"],
+                default: "text",
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: explain`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Explaining '${args.target}' at a '${args.level}' level...`);
 
-        // --- Logic for 'explain' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/explain.md
-        // ---------------------------------------------------------
+        // --- Logic for 'explain' ---
+        console.log("\nAnalyzing target for explanation...");
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        console.log("\n========================================");
+        console.log(`✅ Explanation for '${args.target}'`);
+        console.log("----------------------------------------");
+        console.log("This is a placeholder explanation. In a real scenario, this would contain a detailed breakdown of the target, formatted as per the request.");
+        if (args.format === 'examples') {
+            console.log("\nExample Usage:\n`const result = callFunction();`");
+        }
+        console.log("========================================");
     },
 });
