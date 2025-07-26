@@ -1,0 +1,3 @@
+[submodule "external/superclaude"]
+	path = external/superclaude
+	url = https://github.com/SuperClaude-Org/SuperClaude_Framework.git
