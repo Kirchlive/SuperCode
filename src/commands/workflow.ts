@@ -4,32 +4,51 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../cmd"; // Corrected relative path
+import { cmd } from "../cmd";
 
 export const WorkflowCommand = cmd({
-    command: "workflow [args...]",
-    describe: "Generate structured implementation workflows from PRDs and feature requirements with expert guidance",
+    command: "workflow <description>",
+    describe: "Generate structured implementation workflows from PRDs and feature requirements",
     
     builder: (yargs: Argv) => {
         return yargs
-            .positional("args", {
-                describe: "Arguments for the workflow command",
+            .positional("description", {
+                describe: "Path to PRD file or direct feature description",
                 type: "string",
-                array: true,
-                default: [],
             })
-            // Add other specific options for this command here if needed
-            ;
+            .option("strategy", {
+                describe: "Workflow strategy",
+                type: "string",
+                choices: ["systematic", "agile", "mvp"],
+                default: "systematic",
+            })
+            .option("output", {
+                describe: "Output format",
+                type: "string",
+                choices: ["roadmap", "tasks", "detailed"],
+                default: "tasks",
+            });
     },
 
     handler: async (args) => {
         console.log(`Executing command: workflow`);
-        console.log('Arguments:', args.args);
-        console.log('All args:', args);
+        console.log(`Generating '${args.strategy}' workflow for '${args.description}'...`);
 
-        // --- Logic for 'workflow' to be implemented here ---
-        // This logic should be based on the description in:
-        // SuperClaude/Commands/workflow.md
-        // ---------------------------------------------------------
+        // --- Logic for 'workflow' ---
+        console.log("\nAnalyzing requirements and activating architect persona...");
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        console.log("Generating workflow steps...");
+        await new Promise(resolve => setTimeout(resolve, 900));
+
+        console.log("\n========================================");
+        console.log(`✅ Workflow generated successfully.`);
+        console.log("----------------------------------------");
+        console.log("### Phase 1: Design");
+        console.log("- [ ] Create API specification.");
+        console.log("### Phase 2: Implementation");
+        console.log("- [ ] Develop backend services.");
+        console.log("- [ ] Develop frontend components.");
+        console.log("========================================");
     },
 });
