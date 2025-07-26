@@ -4,7 +4,7 @@
 import type { Argv } from "yargs";
 // It's likely we'll need the 'cmd' helper from the target project.
 // This might need adjustment depending on the final project structure.
-import { cmd } from "../../cmd"; // Assuming a relative path to a shared 'cmd' helper
+import { cmd } from "../cmd"; // Corrected relative path
 
 export const <%= commandName.charAt(0).toUpperCase() + commandName.slice(1) %>Command = cmd({
     command: "<%= commandName %> [args...]",

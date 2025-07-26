@@ -16,12 +16,13 @@
     "@types/glob": "^9.0.0",
     "ejs": "^3.1.10",
     "glob": "^11.0.3",
-    "gray-matter": "^4.0.3",
-    "yargs": "^17.7.2",
-    "@types/yargs": "^17.0.32"
+    "gray-matter": "^4.0.3"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "yargs": "^17.7.2",
+    "@types/yargs": "^17.0.32"
+  }
 }

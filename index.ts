@@ -1,5 +1,6 @@
 // /Users/rob/Development/SuperCode/SuperCode/index.ts
-import { Command } from 'commander';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { glob } from 'glob';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,24 +10,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-    const program = new Command();
-    program
-        .name('supercode-cli')
-        .description('The CLI for the SuperCode Integration Pipeline')
-        .version('0.1.0');
+    const cli = yargs(hideBin(process.argv));
 
     // Dynamically load all command files from the generated directory
     const commandFiles = await glob(path.join(__dirname, 'src/commands/*.ts'));
 
     for (const file of commandFiles) {
         try {
-            // Import the command module
             const commandModule = await import(file);
-            
-            // Find any exported object that is an instance of Command
+            // Find any exported object that has a 'command' property (our command modules)
             for (const key in commandModule) {
-                if (commandModule[key] instanceof Command) {
-                    program.addCommand(commandModule[key]);
+                if (commandModule[key] && typeof commandModule[key] === 'object' && 'command' in commandModule[key]) {
+                    cli.command(commandModule[key]);
                 }
             }
         } catch (error) {
@@ -35,13 +30,10 @@ async function main() {
         }
     }
 
-    // If no command is specified, show help
-    if (process.argv.length < 3) {
-        program.help();
-    }
-
-    // Parse the arguments from the command line
-    program.parse(process.argv);
+    cli
+        .demandCommand(1, 'You need at least one command before moving on')
+        .help()
+        .argv;
 }
 
 main().catch(error => {

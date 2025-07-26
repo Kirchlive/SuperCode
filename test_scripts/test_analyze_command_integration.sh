@@ -44,14 +44,16 @@ log "✅ Command executed successfully."
 
 # 3. Verify the output
 log "STEP 3: Verifying the output..."
-# For now, we just check for the placeholder console log from our template
-grep -q "Executing command: analyze" <<< "$EXEC_OUTPUT"
+# Check for key phrases in the new, functional output
+grep -q "Analysis Report" <<< "$EXEC_OUTPUT" && \
+grep -q "Found 2 files to analyze" <<< "$EXEC_OUTPUT" && \
+grep -q "Recommendations:" <<< "$EXEC_OUTPUT"
 VERIFY_EXIT_CODE=$?
 
 if [ $VERIFY_EXIT_CODE -ne 0 ]; then
-    log "🔴 TEST FAILED: The output did not contain the expected execution message."
+    log "🔴 TEST FAILED: The output did not contain the expected analysis report structure."
     exit 1
 fi
-log "✅ TEST PASSED: The command output was as expected."
+log "✅ TEST PASSED: The command produced a valid analysis report."
 log "--- Test Finished ---"
 exit 0
