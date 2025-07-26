@@ -23,7 +23,7 @@ This repository contains the **SuperCode Integration Pipeline**, an advanced sys
 
 The primary goal is to create a robust, automated, and maintainable bridge between these two powerful systems. This allows OpenCode's autonomous AI agents to leverage the full capabilities of SuperClaude—including its specialized commands, cognitive personas, and MCP integrations—without requiring a Python runtime.
 
-The core philosophy is **"Automation First, Manual Last."** We invest in automating the migration process itself, allowing for rapid, repeatable, and low-effort updates.
+The core philosophy is **"Automation First, Manual Last."** We invest in automating the *bootstrapping* of commands and migration of configurations, allowing us to focus on the manual, high-value work of implementing the core logic in TypeScript.
 
 ## How It Works: The Pipeline Architecture
 
@@ -89,4 +89,5 @@ This project is documented extensively. The main documentation files are located
 | [**guides/**](../guides/) | User and developer guides for migrated features like Personas and MCP. |
 | [**CONTRIBUTING.md**](../CONTRIBUTING.md) | How to contribute to the project. |
 | [**AGENT.md**](../AGENT.md) | The mandatory protocol for AI agents. |
+| [**guides/UPDATE_GUIDE.md**](../guides/UPDATE_GUIDE.md) | Step-by-step instructions for updating the SuperClaude submodule. |
 | [**docs_adr/**](../docs_adr/) | A log of all major architectural decisions made during the project. |
