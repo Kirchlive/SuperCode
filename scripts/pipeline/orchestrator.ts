@@ -32,15 +32,16 @@ async function main() {
     const startTime = Date.now();
 
     try {
-        // Step 1: Generate command boilerplate
-        await runBunScript('generate:commands');
+        // Step 1 & 2 can run in parallel
+        await Promise.all([
+            runBunScript('generate:commands'),
+            runBunScript('migrate:configs')
+        ]);
 
-        // Step 2: Transpile and map core logic
-        // Note: This currently only processes one file as per the vertical slice implementation.
-        // In the future, this script will be expanded to process all core files.
+        // Step 3: Transpile and map core logic
         await runBunScript('map:logic');
 
-        // Step 3: Inject mapped logic into command boilerplate
+        // Step 4: Inject mapped logic into command boilerplate
         console.log(`\n--- Running script: Logic Injection ---\n`);
         const commandFiles = await glob('src/commands/*.ts');
         for (const commandFile of commandFiles) {
