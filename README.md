@@ -65,7 +65,7 @@ For a deep dive into the technical design, see the [**ARCHITECTURE.md**](ARCHITE
 3.  **Run the Initial Integration:**
     This command executes the entire pipeline, generating the integrated code for the first time.
     ```bash
-    bun run import-superclaude
+    bun run import
     ```
 
 ## Usage
@@ -73,10 +73,9 @@ For a deep dive into the technical design, see the [**ARCHITECTURE.md**](ARCHITE
 ### Running the Full Integration
 
 To run a clean, full integration at any time, use the main script defined in `package.json`:
-
-```bash
-bun run import-superclaude
-```
+    ```bash
+    bun run import
+    ```
 
 ### Updating from SuperClaude
 
@@ -90,7 +89,7 @@ When a new version of the SuperClaude framework is released and you want to inte
     Check the new code in `external/superclaude` and review the `git diff`.
 3.  **Run the Pipeline:**
     ```bash
-    bun run import-superclaude
+    bun run import
     ```
 4.  **Test and Commit:**
     Review the newly generated code and, if all tests pass, commit the changes, including the new submodule pointer.
