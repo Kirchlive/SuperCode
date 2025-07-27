@@ -19,17 +19,17 @@ const CORE_PROMPT_FILES = ['CLAUDE.md', 'RULES.md', 'PRINCIPLES.md'];
 interface Persona { id: string; name: string; prompt: string; }
 
 const personaKeywords: Record<string, string[]> = {
-    architect: ["architecture", "design", "scalability"],
-    frontend: ["component", "responsive", "accessibility"],
-    backend: ["api", "database", "service", "reliability"],
-    analyzer: ["analyze", "investigate", "root cause"],
-    security: ["vulnerability", "threat", "compliance"],
-    mentor: ["explain", "learn", "understand"],
-    refactorer: ["refactor", "cleanup", "technical debt"],
-    performance: ["optimize", "performance", "bottleneck"],
-    qa: ["test", "quality", "validation"],
-    devops: ["deploy", "infrastructure", "automation"],
-    scribe: ["document", "write", "guide"],
+    architect: ["architecture", "architectural", "system design", "scalability"],
+    frontend: ["frontend", "ui", "ux", "react", "component", "responsive", "accessibility"],
+    backend: ["backend", "server", "api", "database", "service", "reliability"],
+    analyzer: ["analyze", "debug", "investigate", "root cause", "troubleshoot"],
+    security: ["security", "vulnerability", "threat", "compliance", "cve"],
+    mentor: ["explain", "teach", "learn", "understand", "concept"],
+    refactorer: ["refactor", "cleanup", "technical debt", "improve code"],
+    performance: ["performance", "optimize", "bottleneck", "speed"],
+    qa: ["test", "testing", "quality", "validation", "qa"],
+    devops: ["devops", "deploy", "ci/cd", "infrastructure", "automation", "docker"],
+    scribe: ["docs", "documentation", "write", "guide", "readme"],
 };
 
 export class Orchestrator {
@@ -38,10 +38,8 @@ export class Orchestrator {
     private personas: Record<string, Persona> = {};
     private isInitialized = false;
 
-    // The constructor is private to enforce the singleton pattern.
     private constructor() {}
 
-    // The initialize method now accepts a reader, making the class testable.
     public static async initialize(reader: FileSystemReader): Promise<void> {
         if (Orchestrator.getInstance().isInitialized) return;
         await Orchestrator.getInstance().loadAll(reader);
@@ -98,14 +96,21 @@ export class Orchestrator {
     }
 
     public detectPersona(userInput: string): string | null {
-        const lowerInput = userInput.toLowerCase();
-        for (const personaId in personaKeywords) {
-            for (const keyword of personaKeywords[personaId]) {
-                if (lowerInput.includes(keyword)) {
-                    return personaId;
-                }
+        const lowerInput = ` ${userInput.toLowerCase()} `;
+        
+        const allKeywords = Object.entries(personaKeywords).flatMap(([id, keywords]) => 
+            keywords.map(keyword => ({ id, keyword }))
+        );
+
+        allKeywords.sort((a, b) => b.keyword.length - a.keyword.length);
+
+        for (const { id, keyword } of allKeywords) {
+            // Use surrounding spaces to ensure whole word matching
+            if (lowerInput.includes(` ${keyword} `)) {
+                return id;
             }
         }
+
         return null;
     }
 }
