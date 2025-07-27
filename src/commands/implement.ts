@@ -1,6 +1,7 @@
 // /Users/rob/Development/SuperCode/SuperCode/src/commands/implement.ts
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { McpClient } from '../mcp/client';
 import { Orchestrator, realFileReader } from '../session/orchestrator';
 
 async function main() {
@@ -32,22 +33,44 @@ async function main() {
         .argv;
 
     try {
-        // ... orchestrator logic ...
+        await Orchestrator.initialize(realFileReader);
+        const orchestrator = Orchestrator.getInstance();
+
+        const detectionPrompt = `${argv.prompt} ${argv.type || ''} ${argv.framework || ''}`;
+        const personaId = orchestrator.detectPersona(detectionPrompt);
+
+        let mcpResult = '';
+        if (personaId) {
+            const mcpPreferences = orchestrator.getMcpPreferences(personaId);
+            if (mcpPreferences) {
+                const mcpClient = new McpClient(mcpPreferences);
+                // Simulate an MCP task based on the implementation type
+                if (argv.type === 'component') {
+                    mcpResult = await mcpClient.execute({ type: 'ui', prompt: argv.prompt });
+                } else if (argv.type === 'api') {
+                    mcpResult = await mcpClient.execute({ type: 'patterns', framework: argv.framework || 'general' });
+                }
+            }
+        }
+
+        const systemPrompt = await orchestrator.getSystemPrompt(personaId || undefined);
+
         if (process.env.TEST_ENV === 'true') {
             console.log(`Detected Persona: ${personaId || 'None'}`);
             console.log(`Implementation Type: ${argv.type || 'default'}`);
+            console.log(`MCP Result: ${mcpResult || 'None'}`);
         } else if (argv.verbose) {
             console.log("--- Generated System Prompt ---");
             console.log(systemPrompt);
             console.log("\n--- End of Prompt ---");
             console.log(`\nDetected Persona: ${personaId || 'None'}`);
             console.log(`Implementation Type: ${argv.type || 'default'}`);
+            console.log(`MCP Result: ${mcpResult || 'None'}`);
         } else {
             console.log(`Detected Persona: ${personaId || 'None'}`);
             console.log(`Implementation Type: ${argv.type || 'default'}`);
+            console.log(`MCP Result: ${mcpResult || 'None'}`);
         }
-    } catch (error) { // ...
-    }
 
     } catch (error) {
         console.error("An error occurred during the implement command execution:", error);
@@ -56,3 +79,4 @@ async function main() {
 }
 
 main();
+
