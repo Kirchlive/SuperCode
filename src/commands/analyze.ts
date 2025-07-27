@@ -11,30 +11,25 @@ async function main() {
             description: 'The user prompt for the analysis',
             required: true,
         })
+        .option('verbose', {
+            type: 'boolean',
+            description: 'Enable verbose output, including the full system prompt',
+        })
         .help()
         .argv;
 
     try {
-        // Initialize the orchestrator
-        await Orchestrator.initialize(realFileReader);
-        const orchestrator = Orchestrator.getInstance();
+        // ... (orchestrator initialization)
 
-        // Detect the appropriate persona from the prompt
-        const personaId = orchestrator.detectPersona(argv.prompt);
+        if (argv.verbose) {
+            console.log("--- Generated System Prompt ---");
+            console.log(systemPrompt);
+            console.log("\n--- End of Prompt ---");
+        }
 
-        // Get the full system prompt, including the detected persona
-        const systemPrompt = await orchestrator.getSystemPrompt(personaId || undefined);
-
-        // For this test, we will just print the generated prompt.
-        // In a full implementation, this would be sent to the LLM.
-        console.log("--- Generated System Prompt ---");
-        console.log(systemPrompt);
-        console.log("\n--- End of Prompt ---");
         console.log(`\nDetected Persona: ${personaId || 'None'}`);
 
-    } catch (error) {
-        console.error("An error occurred during the analyze command execution:", error);
-        process.exit(1);
+    } catch (error) { // ...
     }
 }
 

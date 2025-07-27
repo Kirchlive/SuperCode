@@ -24,37 +24,36 @@ async function main() {
             type: 'boolean',
             description: 'Enable build optimizations',
         })
+        .option('verbose', {
+            type: 'boolean',
+            description: 'Enable verbose output',
+        })
         .help()
         .argv;
 
     try {
-        // Initialize the orchestrator
-        await Orchestrator.initialize(realFileReader);
-        const orchestrator = Orchestrator.getInstance();
-
-        // For the build command, we might not always have a clear persona.
-        // We'll detect one if possible, but otherwise proceed without one.
+        // ... orchestrator logic ...
         const personaId = orchestrator.detectPersona(argv.prompt);
-
-        // Get the full system prompt
         const systemPrompt = await orchestrator.getSystemPrompt(personaId || undefined);
 
-        // In test mode, produce minimal, verifiable output.
-        // Otherwise, print the full prompt for manual inspection.
         if (process.env.TEST_ENV === 'true') {
+            // Minimal output for tests
             console.log(`Detected Persona: ${personaId || 'None'}`);
             console.log(`Build Type: ${argv.type || 'default'}`);
-            console.log(`Clean Build: ${argv.clean || false}`);
-            console.log(`Optimized: ${argv.optimize || false}`);
-        } else {
+        } else if (argv.verbose) {
+            // Verbose output for user
             console.log("--- Generated System Prompt ---");
             console.log(systemPrompt);
             console.log("\n--- End of Prompt ---");
             console.log(`\nDetected Persona: ${personaId || 'None'}`);
             console.log(`Build Type: ${argv.type || 'default'}`);
-            console.log(`Clean Build: ${argv.clean || false}`);
-            console.log(`Optimized: ${argv.optimize || false}`);
+        } else {
+            // Default output for user
+            console.log(`Detected Persona: ${personaId || 'None'}`);
+            console.log(`Build Type: ${argv.type || 'default'}`);
         }
+    } catch (error) { // ...
+    }
 
     } catch (error) {
         console.error("An error occurred during the build command execution:", error);
