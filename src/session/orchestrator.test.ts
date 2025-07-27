@@ -9,42 +9,41 @@ const mockReader: FileSystemReader = {
         if (fileName === 'CLAUDE.md') return 'Base prompt from CLAUDE.md';
         if (fileName === 'RULES.md') return 'Rules from RULES.md';
         if (fileName === 'PRINCIPLES.md') return 'Principles from PRINCIPLES.md';
-        if (fileName === 'personas.json') return JSON.stringify([
-            { id: 'architect', name: 'Architect', prompt: 'Architect persona prompt' }
-        ]);
+if (fileName === 'personas.json') return JSON.stringify({
+            architect: { id: 'architect', name: 'Architect', system_prompt: '... \n- Primary: Sequential \n- Secondary: Context7 \n- Avoided: Magic' },
+            frontend: { id: 'frontend', name: 'Frontend', system_prompt: '... \n- Primary: Magic \n- Secondary: Playwright' }
+        });
         throw new Error(`File not found in mock: ${filePath}`);
     }
 };
 
-describe("Orchestrator Persona Detection", () => {
+describe("Orchestrator MCP Preferences", () => {
     beforeAll(async () => {
         await Orchestrator.initialize(mockReader);
     });
 
     const orchestrator = Orchestrator.getInstance();
 
-    test("should detect 'architect' persona from keywords", () => {
-        const input = "Can you design the new architecture for our service?";
-        expect(orchestrator.detectPersona(input)).toBe("architect");
+    test("should extract MCP preferences for a given persona", () => {
+        const prefs = orchestrator.getMcpPreferences("frontend");
+        expect(prefs).toEqual({
+            primary: "Magic",
+            secondary: "Playwright",
+            avoided: null
+        });
     });
 
-    test("should detect 'frontend' persona from keywords", () => {
-        const input = "Create a new responsive component.";
-        expect(orchestrator.detectPersona(input)).toBe("frontend");
+    test("should handle personas with avoided preferences", () => {
+        const prefs = orchestrator.getMcpPreferences("architect");
+        expect(prefs).toEqual({
+            primary: "Sequential",
+            secondary: "Context7",
+            avoided: "Magic"
+        });
     });
 
-    test("should detect 'security' persona from keywords", () => {
-        const input = "Check for a vulnerability in the auth flow.";
-        expect(orchestrator.detectPersona(input)).toBe("security");
-    });
-
-    test("should return null if no persona is detected", () => {
-        const input = "Hello, how are you today?";
-        expect(orchestrator.detectPersona(input)).toBeNull();
-    });
-
-    test("should be case-insensitive", () => {
-        const input = "Can you DESIGN the new ARCHITECTURE?";
-        expect(orchestrator.detectPersona(input)).toBe("architect");
+    test("should return null for preferences if persona not found", () => {
+        const prefs = orchestrator.getMcpPreferences("nonexistent");
+        expect(prefs).toBeNull();
     });
 });

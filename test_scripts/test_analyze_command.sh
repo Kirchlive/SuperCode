@@ -23,17 +23,34 @@ cd "$REPO_ROOT" || exit 1
 echo "--- Test: 'analyze' command integration ---" > "$LOG_FILE"
 echo "Running command: $COMMAND_TO_RUN analyze --persona $PERSONA_ID" >> "$LOG_FILE"
 
-# --- Test Case 1: Manual Activation ---
+# --- Test Case 1: Prompt without Persona Keywords ---
 rm -f "$LOG_FILE" # Clean log for the first test
-echo "--- Test: 'analyze' command manual activation ---" > "$LOG_FILE"
-echo "Running command: $COMMAND_TO_RUN analyze --persona $PERSONA_ID" >> "$LOG_FILE"
+echo "--- Test: 'analyze' command without persona trigger ---" > "$LOG_FILE"
+NON_PERSONA_INPUT="check the file for errors"
+echo "Running command: $COMMAND_TO_RUN --prompt \"$NON_PERSONA_INPUT\"" >> "$LOG_FILE"
 
-$COMMAND_TO_RUN analyze --persona "$PERSONA_ID" >> "$LOG_FILE" 2>&1
+$COMMAND_TO_RUN --prompt "$NON_PERSONA_INPUT" >> "$LOG_FILE" 2>&1
 EXIT_CODE_MANUAL=$?
 
 PASSED_MANUAL=false
-if [ $EXIT_CODE_MANUAL -eq 0 ] && grep -Fq "$EXPECTED_BASE_SNIPPET" "$LOG_FILE" && grep -Fq "$EXPECTED_PERSONA_SNIPPET" "$LOG_FILE"; then
+# We expect the command to succeed but NOT to find the persona snippet
+if [ $EXIT_CODE_MANUAL -eq 0 ] && grep -Fq "$EXPECTED_BASE_SNIPPET" "$LOG_FILE" && ! grep -Fq "$EXPECTED_PERSONA_SNIPPET" "$LOG_FILE"; then
     PASSED_MANUAL=true
+fi
+
+# --- Test Case 2: Auto-Activation ---
+echo "" >> "$LOG_FILE"
+echo "--- Test: 'analyze' command auto-activation ---" >> "$LOG_FILE"
+USER_INPUT="analyze the architecture of the main service"
+echo "Running command: $COMMAND_TO_RUN --prompt \"$USER_INPUT\"" >> "$LOG_FILE"
+
+$COMMAND_TO_RUN --prompt "$USER_INPUT" >> "$LOG_FILE" 2>&1
+EXIT_CODE_AUTO=$?
+
+PASSED_AUTO=false
+# We check for the same persona snippet, as the keywords should trigger it
+if [ $EXIT_CODE_AUTO -eq 0 ] && grep -Fq "$EXPECTED_BASE_SNIPPET" "$LOG_FILE" && grep -Fq "$EXPECTED_PERSONA_SNIPPET" "$LOG_FILE"; then
+    PASSED_AUTO=true
 fi
 
 # --- Test Case 2: Auto-Activation ---
@@ -44,7 +61,7 @@ USER_INPUT="analyze the architecture of the main service"
 echo "Running command: $COMMAND_TO_RUN $USER_INPUT" >> "$LOG_FILE"
 
 # Note: We pass the user input as arguments to the command
-$COMMAND_TO_RUN analyze $USER_INPUT >> "$LOG_FILE" 2>&1
+$COMMAND_TO_RUN --prompt "$USER_INPUT" >> "$LOG_FILE" 2>&1
 EXIT_CODE_AUTO=$?
 
 PASSED_AUTO=false

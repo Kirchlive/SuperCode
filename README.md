@@ -27,16 +27,16 @@ The core philosophy is **"Automation First, Manual Last."** We invest in automat
 
 ## How It Works: The Pipeline Architecture
 
-The pipeline is a multi-stage process that transforms the source code and configurations:
+The pipeline is a **bootstrapper and configuration migrator**. Its goal is to create the necessary TypeScript boilerplate (the command skeletons) and migrate the conceptual features (like Personas) into a structured format, preparing the ground for a manual or AI-assisted implementation of the business logic in TypeScript.
 
-1.  **Source Ingestion:** The SuperClaude repository is included as a version-pinned **Git Submodule**.
-2.  **Command Generation:** A script parses Markdown command definitions to generate TypeScript command boilerplate.
-3.  **Logic Transpilation:** The core Python logic of SuperClaude is transpiled into raw, intermediate TypeScript.
-4.  **AST-based Mapping:** The heart of the pipeline. It intelligently replaces calls to SuperClaude's core functions (including MCP calls) with their native OpenCode equivalents.
-5.  **Config Migration:** A parallel step parses and converts conceptual features like Personas into structured JSON manifests.
-6.  **Logic Injection:** The final step injects the translated logic into the command boilerplate.
+The process involves two main automated steps:
 
-For a deep dive, see the [**ARCHITECTURE.md**](../ARCHITECTURE.md).
+1.  **Command Generation:** A script parses the Markdown command definitions from the `SuperClaude_Framework` submodule to generate the TypeScript command boilerplate files in `src/commands/`.
+2.  **Config Migration:** A parallel script parses conceptual features like `PERSONAS.md` and converts them into structured JSON manifests (e.g., `src/personas.json`).
+
+This automated bootstrapping ensures that the OpenCode environment is perfectly set up to inherit the intelligence of the SuperClaude Framework. The subsequent implementation of the core logic within the generated files is a manual or AI-assisted task for Phase 3.
+
+For a deep dive into the project's design, see the [**ARCHITECTURE.md**](../ARCHITECTURE.md).
 
 ## Getting Started
 

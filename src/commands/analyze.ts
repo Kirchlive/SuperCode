@@ -1,39 +1,41 @@
 // /Users/rob/Development/SuperCode/SuperCode/src/commands/analyze.ts
-import type { Argv } from "yargs";
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
-import { cmd } from "../cmd";
-import { Orchestrator, realFileReader } from "../session/orchestrator";
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { Orchestrator, realFileReader } from '../session/orchestrator';
 
-const AnalyzeCommand = cmd({
-    command: "analyze [files...]",
-    describe: "Analyze code quality, security, performance, and architecture",
-    builder: (yargs: Argv) => {
-        return yargs
-            .positional("files", { describe: "Files to analyze", type: "string", array: true, default: [] })
-            .option("persona", { alias: "p", describe: "The persona to use", type: "string" })
-            .option("focus", { alias: "f", describe: "The specific area to focus on", type: "string" })
-            .option("mode", { alias: "m", describe: "The operational mode", type: "string" });
-    },
-handler: async (args) => {
+async function main() {
+    const argv = await yargs(hideBin(process.argv))
+        .option('prompt', {
+            alias: 'p',
+            type: 'string',
+            description: 'The user prompt for the analysis',
+            required: true,
+        })
+        .help()
+        .argv;
+
+    try {
+        // Initialize the orchestrator
         await Orchestrator.initialize(realFileReader);
         const orchestrator = Orchestrator.getInstance();
-        
-        let personaId = args.persona;
-        if (!personaId) {
-            const userInput = args.files.join(' ');
-            personaId = orchestrator.detectPersona(userInput);
-        }
-        
-        const systemPrompt = await orchestrator.getSystemPrompt(personaId);
-        
-        console.log(systemPrompt);
-    },
-});
 
-// This structure makes the command runnable via 'bun run'
-yargs(hideBin(process.argv))
-    .command(AnalyzeCommand)
-    .demandCommand(1, 'You need to specify a command.')
-    .help()
-    .parse();
+        // Detect the appropriate persona from the prompt
+        const personaId = orchestrator.detectPersona(argv.prompt);
+
+        // Get the full system prompt, including the detected persona
+        const systemPrompt = await orchestrator.getSystemPrompt(personaId || undefined);
+
+        // For this test, we will just print the generated prompt.
+        // In a full implementation, this would be sent to the LLM.
+        console.log("--- Generated System Prompt ---");
+        console.log(systemPrompt);
+        console.log("\n--- End of Prompt ---");
+        console.log(`\nDetected Persona: ${personaId || 'None'}`);
+
+    } catch (error) {
+        console.error("An error occurred during the analyze command execution:", error);
+        process.exit(1);
+    }
+}
+
+main();
