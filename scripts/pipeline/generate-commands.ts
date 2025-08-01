@@ -1,13 +1,14 @@
 // /Users/rob/Development/SuperCode/SuperCode/scripts/pipeline/generate-commands.ts
 
-import fs from 'fs/promises';
-import path from 'path';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 import { glob } from 'glob';
 import matter from 'gray-matter';
 import ejs from 'ejs';
 
-// Define paths based on the project structure
-const REPO_ROOT = process.cwd(); // Use the current working directory as the repo root
+// Define paths based on the script's location for robustness
+const SCRIPT_DIR = import.meta.dir;
+const REPO_ROOT = path.resolve(SCRIPT_DIR, '../../'); // Resolve to the SuperCode repo root
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'scripts/pipeline/templates/command.ts.ejs');
 const SUBMODULE_COMMANDS_PATH = path.join(REPO_ROOT, 'external/superclaude/SuperClaude/Commands/*.md');
 const OUTPUT_DIR = path.join(REPO_ROOT, 'src/commands');
@@ -17,7 +18,7 @@ function toCamelCase(str: string): string {
     return str.replace(/[-_](\w)/g, (_, c) => c.toUpperCase());
 }
 
-async function main() {
+export async function main() {
     console.log('Starting Command Generator...');
 
     try {
@@ -66,4 +67,4 @@ async function main() {
     }
 }
 
-main();
+// main();

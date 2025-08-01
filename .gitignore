@@ -6,10 +6,11 @@ pnpm-debug.log
 
 # Bun
 .bun
+bun.lockb
 
 # Build output
 dist
-build
+build/
 out
 
 # Test Results
@@ -19,7 +20,10 @@ out
 
 # External Dependencies
 # The submodule itself is tracked by .gitmodules, not the contents
-/external/
+# But we need to track non-submodule external folders
+/external/opencode
+/external/opencode_backup
+/external/opencode_new_work
 
 # OS-specific
 .DS_Store

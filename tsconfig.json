@@ -2,14 +2,15 @@
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "Preserve",
+"target": "ESNext",
+    "module": "ESNext",
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
 
     // Bundler mode
     "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
@@ -28,6 +29,9 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-  }
+    "noPropertyAccessFromIndexSignature": false,
+    "types": ["bun-types"]
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "external"]
 }

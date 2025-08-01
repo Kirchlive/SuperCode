@@ -32,25 +32,29 @@ export class McpClient {
     // The intelligent routing logic
     public async execute(task: { type: 'ui'; prompt: string } | { type: 'patterns'; framework: string } | { type: 'analysis'; topic: string }): Promise<string> {
         let toolToUse: string | null = null;
+        const { primary, secondary, avoided } = this.preferences;
 
-        // Determine the best tool based on task type and persona preferences
-        if (task.type === 'ui' && this.preferences.primary === 'magic') {
-            toolToUse = 'magic';
-        } else if (task.type === 'patterns' && (this.preferences.primary === 'context7' || this.preferences.secondary === 'context7')) {
-            toolToUse = 'context7';
-        } else if (task.type === 'analysis' && (this.preferences.primary === 'sequential' || this.preferences.secondary === 'sequential')) {
-            toolToUse = 'sequential';
+        // Determine the default tool for the task type
+        const defaultTool = {
+            ui: 'magic',
+            patterns: 'context7',
+            analysis: 'sequential',
+        }[task.type];
+
+        // Start with the primary preference, if it's not avoided
+        if (primary && primary !== avoided) {
+            toolToUse = primary;
+        } 
+        // Fallback to secondary, if it's not avoided
+        else if (secondary && secondary !== avoided) {
+            toolToUse = secondary;
+        }
+        // Fallback to the default tool, if it's not avoided
+        else if (defaultTool !== avoided) {
+            toolToUse = defaultTool;
         }
 
-        // Fallback to a default tool if no preference matches
         if (!toolToUse) {
-            if (task.type === 'ui') toolToUse = 'magic';
-            if (task.type === 'patterns') toolToUse = 'context7';
-            if (task.type === 'analysis') toolToUse = 'sequential';
-        }
-        
-        // Avoid using the 'avoided' tool
-        if (toolToUse === this.preferences.avoided) {
             return `[MCP Client] Action avoided as per persona preference. Task: ${JSON.stringify(task)}`;
         }
 

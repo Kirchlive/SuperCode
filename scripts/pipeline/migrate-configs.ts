@@ -1,10 +1,11 @@
 // /Users/rob/Development/SuperCode/SuperCode/scripts/pipeline/migrate-configs.ts
 
-import fs from 'fs/promises';
-import path from 'path';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 // --- CONFIGURATION ---
-const REPO_ROOT = process.cwd();
+const SCRIPT_DIR = import.meta.dir;
+const REPO_ROOT = path.resolve(SCRIPT_DIR, '../../'); // Resolve to the SuperCode repo root
 const PERSONAS_SOURCE_FILE = path.join(REPO_ROOT, 'external/superclaude/SuperClaude/Core/PERSONAS.md');
 const OUTPUT_FILE = path.join(REPO_ROOT, 'src/personas.json');
 
@@ -30,14 +31,17 @@ function parsePersonasFile(content: string): Record<string, Partial<Persona>> {
 
         if (personaHeaderMatch) {
             // If we were processing a persona, save it before starting the new one.
-            if (currentPersonaId) {
-                personas[currentPersonaId].system_prompt = currentPromptLines.join('\n').trim();
+            if (currentPersonaId && personas[currentPersonaId]) {
+                personas[currentPersonaId]!.system_prompt = currentPromptLines.join('\n').trim();
             }
 
             // Start a new persona
-            currentPersonaId = personaHeaderMatch[1].replace(/=.*/, ''); // a-z, 0-9 and hyphens only
-            personas[currentPersonaId] = { id: currentPersonaId };
-            currentPromptLines = [];
+            const newPersonaId = personaHeaderMatch[1]?.replace(/=.*/, ''); // Safely access and replace
+            if (newPersonaId) {
+                currentPersonaId = newPersonaId;
+                personas[currentPersonaId] = { id: currentPersonaId };
+                currentPromptLines = [];
+            }
         } else if (currentPersonaId) {
             // If we are inside a persona block, collect the lines for the prompt.
             currentPromptLines.push(line);
@@ -45,15 +49,15 @@ function parsePersonasFile(content: string): Record<string, Partial<Persona>> {
     }
 
     // Save the last persona in the file
-    if (currentPersonaId) {
-        personas[currentPersonaId].system_prompt = currentPromptLines.join('\n').trim();
+    if (currentPersonaId && personas[currentPersonaId]) {
+        personas[currentPersonaId]!.system_prompt = currentPromptLines.join('\n').trim();
     }
 
     return personas;
 }
 
 
-async function main() {
+export async function main() {
     console.log('Starting Config Migrator for Personas...');
 
     try {
@@ -84,7 +88,7 @@ async function main() {
 
         console.log('Config Migrator finished successfully!');
 
-    } catch (error) {
+    } catch (error: any) {
         if (error.code === 'ENOENT') {
             console.warn(`⚠️  WARNING: Persona file not found at: ${PERSONAS_SOURCE_FILE}. Skipping persona migration.`);
             await fs.writeFile(OUTPUT_FILE, JSON.stringify({}, null, 2));
@@ -96,4 +100,4 @@ async function main() {
     }
 }
 
-main();
+// main();
