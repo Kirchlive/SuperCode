@@ -6,6 +6,28 @@ import type { Argv } from "yargs";
 // This might need adjustment depending on the final project structure.
 import { cmd } from "../cmd"; // Corrected relative path
 
+// Import all command handlers
+export { AnalyzeCommand, handleAnalyzeCommand } from "./analyze";
+export { BuildCommand, handleBuildCommand } from "./build";
+export { CleanupCommand, handleCleanupCommand } from "./cleanup";
+export { DeployCommand, handleDeployCommand } from "./deploy";
+export { DesignCommand } from "./design";
+export { DocumentCommand } from "./document";
+export { EstimateCommand } from "./estimate";
+export { ExplainCommand, handleExplainCommand } from "./explain";
+export { FixCommand } from "./fix";
+export { GitCommand } from "./git";
+export { ImplementCommand, handleImplementCommand } from "./implement";
+export { ImproveCommand, handleImproveCommand } from "./improve";
+export { LoadCommand } from "./load";
+export { RefactorCommand } from "./refactor";
+export { SpawnCommand } from "./spawn";
+export { TaskCommand } from "./task";
+export { TestCommand, handleTestCommand } from "./test";
+export { TroubleshootCommand } from "./troubleshoot";
+export { ValidateCommand, handleValidateCommand } from "./validate";
+export { WorkflowCommand } from "./workflow";
+
 export const IndexCommand = cmd({
     command: "index [args...]",
     describe: "Generate comprehensive project documentation and knowledge base",
@@ -33,3 +55,28 @@ export const IndexCommand = cmd({
         // ---------------------------------------------------------
     },
 });
+
+// Export all commands as an array for easy registration
+export const AllCommands = [
+    AnalyzeCommand,
+    BuildCommand,
+    CleanupCommand,
+    DeployCommand,
+    DesignCommand,
+    DocumentCommand,
+    EstimateCommand,
+    ExplainCommand,
+    FixCommand,
+    GitCommand,
+    ImplementCommand,
+    ImproveCommand,
+    IndexCommand,
+    LoadCommand,
+    RefactorCommand,
+    SpawnCommand,
+    TaskCommand,
+    TestCommand,
+    TroubleshootCommand,
+    ValidateCommand,
+    WorkflowCommand
+];
