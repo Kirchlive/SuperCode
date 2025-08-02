@@ -1,5 +1,0 @@
-{
-    "Core.Filesystem.read_file": "tools.read",
-    "Core.Filesystem.write_file": "tools.write",
-    "print": "console.log"
-}
