@@ -4,6 +4,7 @@ import * as path from 'path';
 import { domainKeywords, intentKeywords } from './detection-patterns';
 import { CommandParser, ParsedCommand } from '../tool/command-parser';
 import { FlagResolver, ResolvedFlags } from '../tool/flag-resolver';
+import type { IOrchestrator } from './interfaces';
 
 interface Persona {
     id: string;
@@ -39,7 +40,7 @@ interface ExecutionResult {
     errors: string[];
 }
 
-export class Orchestrator {
+export class Orchestrator implements IOrchestrator {
     private static instance: Orchestrator;
     private personas: Record<string, Persona> = {};
     private sessionState: Map<string, any> = new Map();

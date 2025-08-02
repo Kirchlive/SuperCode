@@ -1,7 +1,7 @@
 // /Users/rob/Development/SuperCode/SuperCode/src/tool/superclaude.ts
 import { z } from "zod";
 import { Tool } from "./tool";
-import { Orchestrator } from "../session/orchestrator";
+import type { IOrchestrator } from "../session/interfaces";
 import { CommandParser } from "./command-parser";
 import { FlagResolver } from "./flag-resolver";
 import { ResponseFormatter, formatStreamingUpdate } from "./response-formatter";
@@ -55,7 +55,7 @@ interface FormattedResponse {
  */
 async function* run(props: SuperClaudeProps): AsyncGenerator<any, any, any> {
     const startTime = Date.now();
-    let orchestrator: Orchestrator;
+    let orchestrator: IOrchestrator;
     let sessionManager: SessionManager;
     let retryCount = 0;
     const maxRetries = props.options?.maxRetries ?? 1;
@@ -65,6 +65,7 @@ async function* run(props: SuperClaudeProps): AsyncGenerator<any, any, any> {
 
     try {
         // Initialize components
+        const { Orchestrator } = await import("../session/orchestrator");
         orchestrator = Orchestrator.getInstance();
         sessionManager = SessionManager.getInstance();
 
@@ -351,7 +352,7 @@ async function validateCommand(props: SuperClaudeProps): Promise<any> {
  * Execute command with timeout
  */
 async function executeWithTimeout(
-    orchestrator: Orchestrator,
+    orchestrator: IOrchestrator,
     props: SuperClaudeProps,
     timeout: number
 ): Promise<any> {
